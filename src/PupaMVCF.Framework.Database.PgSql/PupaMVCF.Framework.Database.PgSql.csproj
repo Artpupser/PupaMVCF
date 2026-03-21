@@ -1,0 +1,29 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net8.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+        <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+        <PackageId>PupaMVCF.Framework.Database.PgSql</PackageId>
+        <Authors>Artpupser</Authors>
+        <Owners>Artpupser</Owners>
+        <Company>Artpupser</Company>
+        <Copyright>Copyright MIT LICENSE 2026</Copyright>
+        <PackageLicenseExpression>MIT</PackageLicenseExpression>
+        <PackageReadmeFile>README.md</PackageReadmeFile>
+        <PackageTags>Database, Dapper, Postgre, Sql, Pgsql, Npgsql</PackageTags>
+        <RepositoryUrl>https://github.com/Artpupser/PupaMVCF.git</RepositoryUrl>
+        <Description>Database package for PupaMVCF.Framework</Description>
+        <Version>1.0.0</Version>
+    </PropertyGroup>
+    <ItemGroup>
+        <None Include="./README.md" Pack="true" PackagePath="/"/>
+    </ItemGroup>
+    <ItemGroup>
+        <PackageReference Include="Dapper" Version="2.1.72"/>
+        <PackageReference Include="Npgsql" Version="10.0.2"/>
+        <PackageReference Include="PupaMVCF.Framework" Version="1.0.0"/>
+    </ItemGroup>
+
+</Project>

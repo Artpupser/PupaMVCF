@@ -1,0 +1,17 @@
+<Project>
+    <ItemGroup>
+        <Files Include="$(MSBuildThisFileDirectory)/../contentFiles/any/any/environment/**/*"/>
+        <FilesProject Include="$(ProjectDir)/environment/**/*"/>
+    </ItemGroup>
+    <Target Name="InitEvn" BeforeTargets="PrepareForBuild">
+        <MakeDir Directories="$(ProjectDir)environment"/>
+        <MakeDir Directories="$(ProjectDir)environment/public"/>
+        <Copy SourceFiles="@(Files)" DestinationFolder="$(ProjectDir)/environment/%(RecursiveDir)"/>
+    </Target>
+    <Target Name="BuildEnv" AfterTargets="Build">
+        <Copy SourceFiles="@(FilesProject)" DestinationFolder="$(TargetDir)/%(RecursiveDir)"/>
+    </Target>
+    <Target Name="PublishEnv" AfterTargets="Publish">
+        <Copy SourceFiles="@(FilesProject)" DestinationFolder="$(PublishDir)/%(RecursiveDir)"/>
+    </Target>
+</Project>

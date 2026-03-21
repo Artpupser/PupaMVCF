@@ -1,0 +1,20 @@
+<Project Sdk="Microsoft.NET.Sdk.Worker">
+
+    <PropertyGroup>
+        <TargetFramework>net8.0</TargetFramework>
+        <Nullable>enable</Nullable>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <UserSecretsId>dotnet-PupaMVCF.ExampleAuthProcess-f9f06ccb-4b41-40bc-8884-5794ca70cdd0</UserSecretsId>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Grpc.Tools" Version="2.78.0">
+            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+            <PrivateAssets>all</PrivateAssets>
+        </PackageReference>
+        <Protobuf Include="..\Protos\*.proto" GrpcServices="Both"/>
+        <PackageReference Include="Microsoft.Extensions.Hosting" Version="8.0.1"/>
+        <PackageReference Include="PupaMVCF.Framework" Version="1.0.0"/>
+        <PackageReference Include="PupaMVCF.Framework.Database.PgSql" Version="1.0.0"/>
+    </ItemGroup>
+</Project>

@@ -1,0 +1,15 @@
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
+
+using PupaLib.FileIO;
+
+using PupaMVCF.Framework.Database;
+
+namespace PupaMVCF.Framework;
+
+public interface ISecureAnyAppProvider {
+   public VirtualFolder PublicFolder { get; }
+   public IDatabaseProcessor DatabaseProcessor { get; }
+   public IConfiguration Configuration { get; }
+   public ILogger<BaseApp> Logger { get; }
+}

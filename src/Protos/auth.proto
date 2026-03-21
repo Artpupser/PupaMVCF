@@ -1,0 +1,34 @@
+syntax = "proto3";
+
+option csharp_namespace = "Protos.Auth";
+
+service AuthService {
+  rpc Login (LoginRequest) returns(LoginResponse);
+  rpc Registration (RegistrationRequest) returns(RegistrationResponse);
+  rpc Verify (VerifyRequest) returns(VerifyResponse);
+}
+
+message VerifyRequest {
+  string code = 1;
+}
+
+message VerifyResponse {
+  bool success = 1;
+}
+
+message LoginRequest {
+  string email = 2;
+}
+
+message LoginResponse {
+  int32 status = 1;
+}
+
+message RegistrationRequest {
+  string login = 2;
+  string email = 3;
+}
+
+message RegistrationResponse {
+  int32 status = 1;
+}

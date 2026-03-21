@@ -1,0 +1,36 @@
+root = true
+
+[*.cs]
+tab_width = 3
+indent_size = tab
+max_line_length = 120
+end_of_line = crlf
+csharp_new_line_before_else = false
+csharp_new_line_before_catch = false
+csharp_new_line_before_finally = false
+csharp_blank_lines_around_region = 1
+csharp_blank_lines_inside_region = 1
+csharp_blank_lines_between_using_groups = 1
+csharp_type_declaration_braces = end_of_line
+csharp_brace_style = end_of_line
+type_declaration_braces = end_of_line
+brace_style = end_of_line
+csharp_empty_block_style = together_same_line
+csharp_prefer_explicit_discard_declaration = false
+csharp_instance_members_qualify_members = none
+csharp_force_attribute_style = separate
+force_attribute_style = separate
+csharp_space_between_attribute_sections = false
+space_between_attribute_sections = false
+csharp_space_between_square_brackets = false
+csharp_space_after_attributes = true
+space_after_cast = false
+csharp_space_around_dot = false
+csharp_space_around_lambda_arrow = true
+csharp_space_before_pointer_asterik_declaration = false
+csharp_space_before_nullable_mark = false
+csharp_space_around_alias_eq = true
+csharp_space_before_trailing_comment = true
+csharp_default_private_modifier = explicit
+csharp_default_internal_modifier = explicit
+csharp_arguments_literal = unset
