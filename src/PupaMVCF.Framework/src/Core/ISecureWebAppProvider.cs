@@ -5,11 +5,12 @@ using PupaLib.FileIO;
 
 using PupaMVCF.Framework.Database;
 
-namespace PupaMVCF.Framework;
+namespace PupaMVCF.Framework.Core;
 
-public interface ISecureAnyAppProvider {
+public interface ISecureWebAppProvider {
    public VirtualFolder PublicFolder { get; }
    public IDatabaseProcessor DatabaseProcessor { get; }
    public IConfiguration Configuration { get; }
-   public ILogger<BaseApp> Logger { get; }
+   public ILogger<WebApp> Logger { get; }
+   public HttpClient Client { get; }
 }

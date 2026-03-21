@@ -38,8 +38,6 @@ public sealed class Router : IRouter {
    }
 
    public async Task Execute(Request request, Response response, CancellationToken cancellationToken) {
-      if (!Session.VerifySession(request)) Session.GenerateSessionGUIDCookie(response);
-
       if (_map.TryGetRoute(request, out var routeValue)) {
          await InvokeRoute(request, response, routeValue, cancellationToken);
          if (response.ErrorStack.LengthStack > 0 || response.StatusCode != 200)

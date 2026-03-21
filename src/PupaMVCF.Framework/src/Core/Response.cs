@@ -1,6 +1,7 @@
-using System.Net;
 using System.Text;
 using System.Text.Json;
+
+using Microsoft.AspNetCore.Http;
 
 using PupaLib.FileIO;
 
@@ -11,7 +12,7 @@ namespace PupaMVCF.Framework.Core;
 
 public sealed class Response : IHaveStack<string> {
    private Memory<byte> _cache;
-   private readonly HttpListenerResponse _response;
+   private readonly HttpResponse _response;
    private readonly Stack<string> _errorStack;
    private MimeContentType _mimeContentType;
    private const string EmptyJsonContent = "{}";
@@ -30,7 +31,7 @@ public sealed class Response : IHaveStack<string> {
       }
    }
 
-   public Response(HttpListenerResponse response) {
+   public Response(HttpResponse response) {
       Nonce = Convert.ToBase64String(System.Security.Cryptography.RandomNumberGenerator.GetBytes(8));
       _errorStack = [];
       _response = response;
@@ -64,12 +65,11 @@ public sealed class Response : IHaveStack<string> {
    }
 
    public void Reopen(Request request) {
-      _response.Redirect(request.Url?.AbsolutePath!);
+      _response.Redirect(request.Url);
    }
 
    public void SetCookie(string key, string value, TimeSpan expiresAfter, bool secure = true) {
-      _response.Cookies.Add(new Cookie(key, value) {
-         Expired = false,
+      _response.Cookies.Append(key, value, new CookieOptions() {
          Expires = DateTime.Now + expiresAfter,
          Secure = secure
       });
@@ -80,8 +80,8 @@ public sealed class Response : IHaveStack<string> {
    }
 
    public async Task SendAsync(CancellationToken cancellationToken) {
-      _response.ContentLength64 = _cache.Length;
-      await _response.OutputStream.WriteAsync(_cache, cancellationToken);
+      _response.ContentLength = _cache.Length;
+      await _response.Body.WriteAsync(_cache, cancellationToken);
    }
 
    #region WRITE FUNCTIONS

@@ -1,5 +1,7 @@
+using PupaMVCF.ExampleProcess.Components;
 using PupaMVCF.ExampleProcess.Controllers;
 using PupaMVCF.Framework.Controllers;
+using PupaMVCF.Framework.Core;
 using PupaMVCF.Framework.Database;
 using PupaMVCF.Framework.Database.PgSql;
 using PupaMVCF.Framework.Middleware;
@@ -20,9 +22,9 @@ public static class Program {
          ]);
          return new Router(routerMapBuilder);
       });
+      HeaderComponent.PreloadHeader([("Главная", "/"), ("О нас", "/aboutus")]);
       builder.Services.AddSingleton<IDatabaseProcessor, DatabasePgSqlProcessor>();
-      builder.Services.AddSingleton<ExampleApp>();
-      builder.Services.AddHostedService<ExampleAppWorker>();
+      builder.Services.AddHostedService<ExampleApp>();
       var host = builder.Build();
       await host.RunAsync();
    }

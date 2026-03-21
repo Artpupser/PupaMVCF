@@ -4,9 +4,9 @@ using PupaMVCF.Framework.Routing;
 
 namespace PupaMVCF.ExampleProcess;
 
-public sealed class ExampleApp : App {
+public sealed class ExampleApp : WebApp {
    public ExampleApp(IConfiguration configuration, IRouter router,
-      IDatabaseProcessor databaseProcessor, ILogger<App> logger) : base(
+      IDatabaseProcessor databaseProcessor, ILogger<WebApp> logger) : base(
       configuration, databaseProcessor, router,
       logger) { }
 }

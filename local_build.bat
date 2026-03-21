@@ -16,6 +16,7 @@ dotnet pack -c Release
 dotnet nuget push .\bin\Release\PupaMVCF.Framework.Database.PgSql.1.0.0.nupkg -s C:\LocalNuget
 echo Killing process
 taskkill /F /IM dotnet.exe
+taskkill /F /IM MsBuild.exe
 @REM echo Runing ExampleProcess
 @REM cd ..\PupaMVCF.ExampleProcess
 @REM dotnet run

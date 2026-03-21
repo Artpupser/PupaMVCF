@@ -82,7 +82,7 @@ public static partial class ValidatorManager {
       using var httpRequestMessage = new HttpRequestMessage(HttpMethod.Post, CLOUDFLARE_TURNSTILE) {
          Content = content
       };
-      using var httpResponseMessage = await App.SecureInstance.Client
+      using var httpResponseMessage = await WebApp.SecureInstance.Client
          .SendAsync(httpRequestMessage, cancellationToken)
          .ConfigureAwait(false);
       if (!httpResponseMessage.IsSuccessStatusCode) return false;
@@ -94,7 +94,8 @@ public static partial class ValidatorManager {
       return result?.Success ?? false;
    }
 
-   [System.Text.RegularExpressions.GeneratedRegex(@"^[^@\s]+@[^@\s]+\.[^@\s]+$")]
+   [System.Text.RegularExpressions.GeneratedRegex(@"^[^@\s]+@[^@\s]+\.[^@\s]+$",
+      System.Text.RegularExpressions.RegexOptions.Singleline)]
    private static partial System.Text.RegularExpressions.Regex EmailRegex();
 
    [System.Text.RegularExpressions.GeneratedRegex(@"^\+[1-9]\d{1,14}$")]

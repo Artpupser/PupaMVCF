@@ -1,22 +1,31 @@
 using Grpc.Core;
 
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+
+using PupaLib.FileIO;
 
 using PupaMVCF.Framework.Database;
 using PupaMVCF.Framework.Extensions;
 
 namespace PupaMVCF.Framework.Macro;
 
-public abstract class MacroApp : BaseApp, ISecureMacroAppProvider {
+public abstract class MacroApp : IHostedService, ISecureMacroAppProvider {
    protected readonly Server _server;
    protected bool _serverShutdown = false;
+   public VirtualFolder PublicFolder { get; }
+   public IDatabaseProcessor DatabaseProcessor { get; }
+   public IConfiguration Configuration { get; }
+   public ILogger<MacroApp> Logger { get; }
    public static ISecureMacroAppProvider SecureInstance { get; private set; } = null!;
+   [ConfigurationKeyName("Host")] public static string HostName { get; private set; } = string.Empty;
+
+   [ConfigurationKeyName("Port")] public static ushort Port { get; private set; } = 50001;
 
    protected MacroApp(IConfiguration configuration,
       IDatabaseProcessor databaseProcessor, IEnumerable<ServerServiceDefinition> services,
-      ILogger<BaseApp> logger) : base(configuration,
-      databaseProcessor, logger) {
+      ILogger<MacroApp> logger) {
       if (SecureInstance != null)
          throw new InvalidOperationException("MacroApp provider has already been configured");
       _server = new Server {
@@ -28,33 +37,18 @@ public abstract class MacroApp : BaseApp, ISecureMacroAppProvider {
       SecureInstance = this;
    }
 
-   public override async Task Run(CancellationToken cancellationToken) {
+   public async Task StartAsync(CancellationToken cancellationToken) {
       Logger.LogInformation("gRPC server run! {HostName}:{Port}", HostName, Port);
       _server.Start();
       try {
-         await Task.Delay(System.Threading.Timeout.Infinite, cancellationToken);
+         await Task.Delay(Timeout.Infinite, cancellationToken);
       } finally {
-         await Stop(cancellationToken);
+         await StopAsync(cancellationToken);
       }
    }
 
-   public override async Task Stop(CancellationToken cancellationToken) {
-      if (_serverShutdown) return;
-      try {
-         Logger.LogInformation("gRPC server shutdown! {HostName}:{Port}", HostName, Port);
-         _serverShutdown = true;
-         await _server.ShutdownAsync();
-      } finally {
-         Dispose();
-      }
+   public async Task StopAsync(CancellationToken cancellationToken) {
+      Logger.LogInformation("gRPC server shutdown! {HostName}:{Port}", HostName, Port);
+      await _server.ShutdownAsync();
    }
-
-   #region DISPOSE
-
-   public override void Dispose() {
-      SecureInstance = null!;
-      base.Dispose();
-   }
-
-   #endregion
 }

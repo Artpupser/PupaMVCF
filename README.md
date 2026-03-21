@@ -8,13 +8,13 @@
 
 ### OS
 
-- Only windows OS is supported for now, but cross-platform support is on the way.
+- Cross-platform is supported for now.
 
 ### Features
 
+- Cross-platform
 - MVC
 - gRPC
-- Sessions (Developing)
 - Middleware (Developing)
 - Views
 - Dependency Injection
@@ -31,10 +31,9 @@
 - DaemonProcessing
 - MicroServices
 - Cookies
+- Sessions (Kestrel)
+- Kestrel
 
 ### Tasks
 
-- Added kestrel server to host the application
-- Upgrade and protect sessions
-- Cross-platform support
 - Added support caching for database
