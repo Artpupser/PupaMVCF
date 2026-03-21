@@ -11,16 +11,16 @@ public static partial class ValidatorManager {
 
    private static string GetMessage(ValidRuleType rule, int value) {
       return rule switch {
-         ValidRuleType.Need => "Это поле должно быть заполнено!",
-         ValidRuleType.Number => "Поле не является числом",
-         ValidRuleType.Min => $"Поле должно быть больше {value}",
-         ValidRuleType.Max => $"Поле должно быть меньше {value}",
-         ValidRuleType.MinLength => $"Кол-во символов в поле должно быть больше {value}",
-         ValidRuleType.MaxLength => $"Кол-во символов в поле должно быть меньше {value}",
-         ValidRuleType.CloudflareCaptcha => $"Каптча не пройдена",
-         ValidRuleType.Email => $"Почта не корректна",
-         ValidRuleType.Phone => $"Телефон не корректен",
-         _ => "Неопознаная ошибка в поле"
+         ValidRuleType.Need => "This field is required!",
+         ValidRuleType.Number => "The field is not a number",
+         ValidRuleType.Min => $"The field must be greater than {value}",
+         ValidRuleType.Max => $"The field must be less than {value}",
+         ValidRuleType.MinLength => $"The number of characters must be greater than {value}",
+         ValidRuleType.MaxLength => $"The number of characters must be less than {value}",
+         ValidRuleType.CloudflareCaptcha => $"Captcha verification failed",
+         ValidRuleType.Email => $"Invalid email address",
+         ValidRuleType.Phone => $"Invalid phone number",
+         _ => "Unknown field error"
       };
    }
 
@@ -58,7 +58,7 @@ public static partial class ValidatorManager {
          return true;
       }
 
-      response.ErrorStack.PushStack("Данные пустые");
+      response.ErrorStack.PushStack("Data is empty");
       return false;
    }
 

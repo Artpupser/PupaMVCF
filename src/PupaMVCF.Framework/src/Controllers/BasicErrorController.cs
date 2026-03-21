@@ -35,7 +35,6 @@ public abstract class BasicErrorController : Controller {
    [ControllerHandler("*", HttpMethodType.GET)]
    protected virtual async Task ErrorPageHandler(Request request, Response response,
       CancellationToken cancellationToken) {
-      response.StatusCode = 400;
       if (_errorHandlers.TryGetValue(request.MimeContentType, out var func))
          await func(request, response, cancellationToken);
    }
