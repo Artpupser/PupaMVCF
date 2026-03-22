@@ -6,49 +6,45 @@ using Microsoft.Extensions.Logging;
 
 using PupaLib.FileIO;
 
-using PupaMVCF.Framework.Database;
 using PupaMVCF.Framework.Extensions;
 
 namespace PupaMVCF.Framework.Macro;
 
-public abstract class MacroApp : IHostedService, ISecureMacroAppProvider {
+public abstract class MacroApp : IHostedService, ISecureMacroAppContext {
    protected readonly Server _server;
-   protected bool _serverShutdown = false;
    public VirtualFolder PublicFolder { get; }
-   public IDatabaseProcessor DatabaseProcessor { get; }
    public IConfiguration Configuration { get; }
    public ILogger<MacroApp> Logger { get; }
-   public static ISecureMacroAppProvider SecureInstance { get; private set; } = null!;
+   public static ISecureMacroAppContext SecureContextInstance { get; private set; } = null!;
    [ConfigurationKeyName("Host")] public static string HostName { get; private set; } = string.Empty;
 
    [ConfigurationKeyName("Port")] public static ushort Port { get; private set; } = 50001;
 
-   protected MacroApp(IConfiguration configuration,
-      IDatabaseProcessor databaseProcessor, IEnumerable<ServerServiceDefinition> services,
+   protected MacroApp(IConfiguration configuration, IEnumerable<ServerServiceDefinition> services,
       ILogger<MacroApp> logger) {
-      if (SecureInstance != null)
+      if (SecureContextInstance != null)
          throw new InvalidOperationException("MacroApp provider has already been configured");
+      configuration.BindConfigurationWithClass(this);
+      Configuration = configuration;
+      PublicFolder = VirtualIo.RootFolder.GetFolderIn("public") ??
+                     throw new DirectoryNotFoundException("Public folder not founded");
+      Logger = logger;
       _server = new Server {
          Ports = {
             new ServerPort(HostName, Port, ServerCredentials.Insecure)
          }
       };
       foreach (var serviceItem in services) _server.Services.Add(serviceItem);
-      SecureInstance = this;
+      SecureContextInstance = this;
    }
 
    public async Task StartAsync(CancellationToken cancellationToken) {
       Logger.LogInformation("gRPC server run! {HostName}:{Port}", HostName, Port);
       _server.Start();
-      try {
-         await Task.Delay(Timeout.Infinite, cancellationToken);
-      } finally {
-         await StopAsync(cancellationToken);
-      }
    }
 
    public async Task StopAsync(CancellationToken cancellationToken) {
-      Logger.LogInformation("gRPC server shutdown! {HostName}:{Port}", HostName, Port);
+      Logger.LogWarning("gRPC server shutdown! {HostName}:{Port}", HostName, Port);
       await _server.ShutdownAsync();
    }
 }

@@ -1,0 +1,13 @@
+.git
+.github
+.idea
+*.md
+*.DotSettings.user
+appsettings.Example.json
+LICENSE
+*.bat
+nuget.config
+obj/
+bin/
+.editorconfig
+Dockerfile

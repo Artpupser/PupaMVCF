@@ -15,28 +15,23 @@
         <RepositoryUrl>https://github.com/Artpupser/PupaMVCF.git</RepositoryUrl>
         <Description>Simplify MVC web framework on csharp</Description>
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-        <Version>0.8.0</Version>
+        <Version>1.0.0</Version>
     </PropertyGroup>
     <ItemGroup>
-        <None Include="../../README.md" Pack="true" PackagePath="/" />
+        <PackageReference Include="Microsoft.AspNetCore.Server.Kestrel" Version="2.3.9"/>
+        <PackageReference Include="Microsoft.AspNetCore.Session" Version="2.3.9"/>
+        <PackageReference Include="Microsoft.Extensions.Caching.Memory" Version="10.0.5"/>
+        <PackageReference Include="Microsoft.Extensions.Configuration" Version="10.0.5"/>
+        <PackageReference Include="Microsoft.Extensions.Hosting" Version="10.0.5"/>
+        <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="10.0.5"/>
+        <PackageReference Include="Google.Protobuf" Version="3.34.0"/>
+        <PackageReference Include="Grpc.Core" Version="2.46.6"/>
+        <PackageReference Include="PupaLib.FileIO" Version="1.2.0"/>
     </ItemGroup>
     <ItemGroup>
-        <PackageReference Include="Google.Protobuf" Version="3.34.0" />
-        <PackageReference Include="Grpc.Core" Version="2.46.6" />
-        <PackageReference Include="Microsoft.AspNetCore.Server.Kestrel" Version="2.3.9" />
-        <PackageReference Include="Microsoft.AspNetCore.Session" Version="2.3.9" />
-        <PackageReference Include="Microsoft.Extensions.Caching.Memory" Version="10.0.5" />
-        <PackageReference Include="Microsoft.Extensions.Configuration" Version="10.0.5" />
-        <PackageReference Include="Microsoft.Extensions.Hosting" Version="10.0.5" />
-        <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="10.0.5" />
-        <PackageReference Include="PupaLib.FileIO" Version="1.2.0" />
+        <Content Include="environment\**\*" Pack="true" PackagePath="contentFiles/any/any/environment/"/>
+        <Content Include="appsettings.example.json" Pack="true" PackagePath="contentFiles\any\any\"/>
+        <Content Include="build\**\*" Pack="true" PackagePath="build\"/>
+        <None Include="../../README.md" Pack="true" PackagePath="/"/>
     </ItemGroup>
-    <ItemGroup>
-        <Content Include="environment\**\*" Pack="true" PackagePath="contentFiles/any/any/environment/" />
-    </ItemGroup>
-    <ItemGroup>
-        <Content Include="build\**\*" Pack="true" PackagePath="build\" />
-    </ItemGroup>
-
-
 </Project>

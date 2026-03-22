@@ -69,7 +69,7 @@ public sealed class Response : IHaveStack<string> {
    }
 
    public void SetCookie(string key, string value, TimeSpan expiresAfter, bool secure = true) {
-      _response.Cookies.Append(key, value, new CookieOptions() {
+      _response.Cookies.Append(key, value, new CookieOptions {
          Expires = DateTime.Now + expiresAfter,
          Secure = secure
       });
@@ -97,7 +97,7 @@ public sealed class Response : IHaveStack<string> {
 
    public void WriteTJsonToCache<T>(T content) where T : class {
       MimeContentType = MimeContentType.Json;
-      WriteStrToCache(JsonSerializer.Serialize(content, BaseApp.JsonSerializerOptions));
+      WriteStrToCache(JsonSerializer.Serialize(content, WebApp.JsonSerializerOptions));
    }
 
    public async Task WriteVirtualFileToCache(VirtualFile file, CancellationToken cancellationToken) {

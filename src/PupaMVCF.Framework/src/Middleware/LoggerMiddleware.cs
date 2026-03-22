@@ -6,7 +6,7 @@ namespace PupaMVCF.Framework.Middleware;
 
 public sealed class LoggerMiddleware : IMiddleware {
    public Task<bool> Invoke(Request request, Response response, CancellationToken cancellationToken) {
-      BaseApp.BaseInstance.Logger.LogInformation(
+      WebApp.SecureContextInstance.Logger.LogInformation(
          "<- Request ->\nPattern:{Pattern}\nMimeType:{MimeType}\nMethod:{Method}\n", request.RawUrl,
          request.MimeContentType, request.HttpMethodType);
       return Task.FromResult(true);

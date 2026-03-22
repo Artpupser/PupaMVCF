@@ -13,7 +13,6 @@
             <PrivateAssets>all</PrivateAssets>
         </PackageReference>
         <Protobuf Include="..\Protos\*.proto" GrpcServices="Both"/>
-        <PackageReference Include="PupaMVCF.Framework" Version="0.8.0"/>
-        <PackageReference Include="PupaMVCF.Framework.Database.PgSql" Version="1.0.0"/>
+        <PackageReference Include="PupaMVCF.Framework" Version="1.0.0"/>
     </ItemGroup>
 </Project>

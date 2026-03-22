@@ -1,17 +1,7 @@
-using System.Text.Json;
 using System.Text.Json.Serialization;
-using System.Text.Json.Serialization.Metadata;
-
+using System.Text.Json;
 
 namespace PupaMVCF.Framework.Models;
 
 [JsonSerializable(typeof(CaptchaResponseModel))]
-internal class RecaptchaJsonContext : JsonSerializerContext {
-   public RecaptchaJsonContext(JsonSerializerOptions? options) : base(options) { }
-
-   public override JsonTypeInfo? GetTypeInfo(Type type) {
-      throw new NotImplementedException();
-   }
-
-   protected override JsonSerializerOptions? GeneratedSerializerOptions { get; }
-}
+internal partial class CaptchaJsonContext : JsonSerializerContext;

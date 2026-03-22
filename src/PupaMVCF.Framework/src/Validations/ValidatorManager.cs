@@ -76,20 +76,20 @@ public static partial class ValidatorManager {
 
    private static async Task<bool> VerifyCaptcha(string value, CancellationToken cancellationToken) {
       using var content = new FormUrlEncodedContent(new Dictionary<string, string> {
-         ["secret"] = BaseApp.CaptchaSecureKey,
+         ["secret"] = WebApp.CaptchaSecureKey,
          ["token"] = value
       });
       using var httpRequestMessage = new HttpRequestMessage(HttpMethod.Post, CLOUDFLARE_TURNSTILE) {
          Content = content
       };
-      using var httpResponseMessage = await WebApp.SecureInstance.Client
+      using var httpResponseMessage = await WebApp.SecureContextInstance.Client
          .SendAsync(httpRequestMessage, cancellationToken)
          .ConfigureAwait(false);
       if (!httpResponseMessage.IsSuccessStatusCode) return false;
       await using var stream =
          await httpResponseMessage.Content.ReadAsStreamAsync(cancellationToken).ConfigureAwait(false);
       var result = await JsonSerializer
-         .DeserializeAsync(stream, RecaptchaJsonContext.Default.CaptchaResponseModel, cancellationToken)
+         .DeserializeAsync(stream, CaptchaJsonContext.Default.CaptchaResponseModel, cancellationToken)
          .ConfigureAwait(false);
       return result?.Success ?? false;
    }

@@ -11,7 +11,7 @@ public sealed class StaticController : Controller {
       var path = request.GetQueryValue("name");
       if (path == string.Empty || path.Any(x => x is '\\' or '/'))
          return;
-      var file = WebApp.SecureInstance.PublicFolder.GetFileIn(path);
+      var file = WebApp.SecureContextInstance.PublicFolder.GetFileIn(path);
       if (file == null)
          return;
       response.StatusCode = 200;

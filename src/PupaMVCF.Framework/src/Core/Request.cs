@@ -18,7 +18,7 @@ public class Request {
    public string? SessionGUID => Session?.Id;
    public IPAddress IpAddress => _request.HttpContext.Connection.RemoteIpAddress;
    public string UserAgent => $"{_request.Headers["User-Agent"]}";
-   
+
    public Request(HttpRequest request, ISession session) {
       _request = request;
       MimeContentType = MimeContent.GetMimeType(request.ContentType);
@@ -67,11 +67,11 @@ public class Request {
    }
 
    public async Task<T> ReadContentT<T>(CancellationToken cancellationToken) where T : class {
-      return JsonSerializer.Deserialize<T>(await ReadContentStr(cancellationToken), BaseApp.JsonSerializerOptions)!;
+      return JsonSerializer.Deserialize<T>(await ReadContentStr(cancellationToken), WebApp.JsonSerializerOptions)!;
    }
 
    public async Task<T?> ReadSafeContentT<T>(CancellationToken cancellationToken) where T : class {
-      return JsonSerializer.Deserialize<T>(await ReadContentStr(cancellationToken), BaseApp.JsonSerializerOptions);
+      return JsonSerializer.Deserialize<T>(await ReadContentStr(cancellationToken), WebApp.JsonSerializerOptions);
    }
 
    #endregion

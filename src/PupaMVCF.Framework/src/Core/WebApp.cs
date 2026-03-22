@@ -1,4 +1,6 @@
 using System.Net;
+using System.Text.Encodings.Web;
+using System.Text.Json;
 
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -9,21 +11,18 @@ using Microsoft.Extensions.Logging;
 
 using PupaLib.FileIO;
 
-using PupaMVCF.Framework.Database;
 using PupaMVCF.Framework.Extensions;
 using PupaMVCF.Framework.Routing;
 using PupaMVCF.Framework.Views;
 
 namespace PupaMVCF.Framework.Core;
 
-public abstract class WebApp : IHostedService, ISecureWebAppProvider {
-   public static ISecureWebAppProvider SecureInstance { get; private set; } = null!;
+public abstract class WebApp : IHostedService, ISecureWebAppContext {
+   public static ISecureWebAppContext SecureContextInstance { get; private set; } = null!;
    protected readonly IRouter _router;
    private readonly IWebHost _host;
 
    public VirtualFolder PublicFolder { get; }
-   public IDatabaseProcessor DatabaseProcessor { get; }
-
    public IConfiguration Configuration { get; }
    public ILogger<WebApp> Logger { get; }
    public HttpClient Client { get; }
@@ -40,15 +39,21 @@ public abstract class WebApp : IHostedService, ISecureWebAppProvider {
    [ConfigurationKeyName("CaptchaSecureSite")]
    public static string CaptchaSecureSite { get; private set; } = string.Empty;
 
-   protected WebApp(IConfiguration configuration, IDatabaseProcessor databaseProcessor, IRouter router,
+   public static readonly JsonSerializerOptions JsonSerializerOptions = new(JsonSerializerDefaults.Web) {
+      Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping,
+      PropertyNameCaseInsensitive = true,
+      WriteIndented = false
+   };
+
+
+   protected WebApp(IConfiguration configuration, IRouter router,
       ILogger<WebApp> logger) {
-      if (SecureInstance != null)
+      if (SecureContextInstance != null)
          throw new InvalidOperationException("App provider has already been configured");
       configuration.BindConfigurationWithClass(this);
       View.LoadCssFiles(configuration);
       Logger = logger;
       Configuration = configuration;
-      DatabaseProcessor = databaseProcessor;
       PublicFolder = VirtualIo.RootFolder.GetFolderIn("public") ??
                      throw new DirectoryNotFoundException("Public folder not founded");
       _router = router;
@@ -82,11 +87,13 @@ public abstract class WebApp : IHostedService, ISecureWebAppProvider {
          });
       });
       _host = builder.Build();
-      SecureInstance = this;
+      SecureContextInstance = this;
    }
 
    public async Task StartAsync(CancellationToken cancellationToken) {
-      Logger.LogInformation("WebApp [Kestrel] server starting on https://{HostName}:{Port}/", HostName, Port);
+      Logger.LogInformation(
+         "WebApp [Kestrel] server starting on [http://{0}:{1}/] or [https://{2}:{3}/]", HostName,
+         Port, HostName, Port);
       await _host.StartAsync(cancellationToken);
    }
 
@@ -98,6 +105,6 @@ public abstract class WebApp : IHostedService, ISecureWebAppProvider {
    public void Dispose() {
       Client?.Dispose();
       _host?.Dispose();
-      SecureInstance = null!;
+      SecureContextInstance = null!;
    }
 }

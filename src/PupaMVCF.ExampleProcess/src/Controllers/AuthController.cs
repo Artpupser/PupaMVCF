@@ -35,7 +35,7 @@ public sealed class AuthController : Controller {
          response.ErrorStack.PushStack("Verify false!");
       }
 
-      WebApp.SecureInstance.Logger.LogWarning($"Not valid");
+      WebApp.SecureContextInstance.Logger.LogWarning($"Not valid");
    }
 
    [ControllerHandler("/login", HttpMethodType.POST)]

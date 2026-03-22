@@ -20,7 +20,6 @@
 - Dependency Injection
 - Logging
 - Configuration
-- IDatabaseProcessor
 - Models
 - Controllers
 - Routing
@@ -36,4 +35,8 @@
 
 ### Tasks
 
-- Added support caching for database
+- ~~Remove PupaMVCF.Framework.Database.PgSql~~
+- ~~Added support caching for database~~
+- ~~Append Kestrel system~~
+- ~~Upgrade protection and work with session~~
+- Implement a flexible system for obtaining internal objects

@@ -3,14 +3,10 @@ using Microsoft.Extensions.Logging;
 
 using PupaLib.FileIO;
 
-using PupaMVCF.Framework.Database;
-
 namespace PupaMVCF.Framework.Core;
 
-public interface ISecureWebAppProvider {
+public interface ISecureAnyAppContext<out T> where T : notnull {
    public VirtualFolder PublicFolder { get; }
-   public IDatabaseProcessor DatabaseProcessor { get; }
+   public ILogger<T> Logger { get; }
    public IConfiguration Configuration { get; }
-   public ILogger<WebApp> Logger { get; }
-   public HttpClient Client { get; }
 }

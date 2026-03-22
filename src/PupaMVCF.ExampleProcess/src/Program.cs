@@ -1,9 +1,6 @@
 using PupaMVCF.ExampleProcess.Components;
 using PupaMVCF.ExampleProcess.Controllers;
 using PupaMVCF.Framework.Controllers;
-using PupaMVCF.Framework.Core;
-using PupaMVCF.Framework.Database;
-using PupaMVCF.Framework.Database.PgSql;
 using PupaMVCF.Framework.Middleware;
 using PupaMVCF.Framework.Routing;
 
@@ -12,7 +9,6 @@ namespace PupaMVCF.ExampleProcess;
 public static class Program {
    private static async Task Main(string[] args) {
       var builder = Host.CreateApplicationBuilder(args);
-      builder.Configuration.AddJsonFile("secrets.json");
       builder.Services.AddSingleton<IRouter, Router>(_ => {
          var routerMapBuilder = new RouterMapBuilder();
          routerMapBuilder.AddMiddlewareRange([new LoggerMiddleware()]);
@@ -22,7 +18,6 @@ public static class Program {
          ]);
          return new Router(routerMapBuilder);
       });
-      builder.Services.AddSingleton<IDatabaseProcessor, DatabasePgSqlProcessor>();
       builder.Services.AddHostedService<ExampleApp>();
       HeaderComponent.PreloadHeader([("Главная", "/"), ("О нас", "/aboutus")]);
       var host = builder.Build();
