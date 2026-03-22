@@ -7,7 +7,6 @@
 
 help.md
 .idea
-.github
 src/PupaMVCF.ExampleProcess/appsettings.json
 src/PupaMVCF.ExampleMacroProcess/appsettings.json
 *.bat

@@ -1,0 +1,76 @@
+﻿name: Deploy to nuget
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+env:
+  PROJECT_LIB_PATH: 'src/PupaMVCF.Framework/PupaMVCF.Framework.csproj'
+  PROJECT_TESTS_PATH: 'src/PupaMVCF.Framework.Tests/PupaMVCF.Framework.Tests.csproj'
+  PACKAGE_OUTPUT_DIR: ${{ github.workspace }}/output
+  OUTPUT_NUPKG_FILE: ${{ github.workspace }}/output/*.nupkg
+  NUGET_SOURCE_URI: "https://api.nuget.org/v3/index.json"
+  GITHUB_USERNAME: "Artpupser"
+  
+jobs:
+  test:
+    name: "Test"
+    runs-on: "ubuntu-latest"
+    steps:
+      - name: 'Checkout'
+        uses: actions/checkout@v3
+      
+      - name: "Setup dotnet"
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: '8.0.x'
+      
+      - name: "Resotore lib project"
+        run: dotnet restore ${{ env.PROJECT_LIB_PATH }}
+      
+      - name: "Resotore test project"
+        run: dotnet restore ${{ env.PROJECT_TESTS_PATH }}
+      
+      - name: "Build lib project"
+        run: dotnet build ${{ env.PROJECT_LIB_PATH }}
+      
+      - name: "Build test project"
+        run: dotnet build ${{ env.PROJECT_TESTS_PATH }}
+      
+      - name: "Run test"
+        run: dotnet test ${{ env.PROJECT_TESTS_PATH }} --no-build --verbosity normal
+  deploy:
+    name: "Deploy"
+    runs-on: 'ubuntu-latest'
+    needs: test
+    steps:
+      - name: 'Checkout'
+        uses: actions/checkout@v3
+      
+      - name: "Setup dotnet"
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: '8.0.x'
+      
+      - name: "Restore package"
+        run: dotnet restore ${{ env.PROJECT_LIB_PATH }}
+      
+      - name: "Build package"
+        run: dotnet build ${{ env.PROJECT_LIB_PATH }} --no-restore -c Release
+      
+      - name: "Get version"
+        id: version
+        uses: battila7/get-version-action@v2
+      
+      - name: "Pack pacakge"
+        run: dotnet pack ${{ env.PROJECT_LIB_PATH }} --no-restore --no-build -c Release --include-symbols -p:PackageVersion=${{ steps.version.outputs.version-without-v }} --output ${{ env.PACKAGE_OUTPUT_DIR }}
+      
+      - name: "Push package NUGET"
+        run: dotnet nuget push --skip-duplicate ${{ env.OUTPUT_NUPKG_FILE }} -k ${{ secrets.NUGET_AUTH_TOKEN }} -s ${{ env.NUGET_SOURCE_URI }}
+      
+      - name: "Add source for github"
+        run: dotnet nuget add source --username ${{ env.GITHUB_USERNAME }} --password ${{ secrets.GIT_AUTH_TOKEN }} --store-password-in-clear-text --name github "https://nuget.pkg.github.com/${{ env.GITHUB_USERNAME }}/index.json"
+      
+      - name: "Push package GITHUB"
+        run: dotnet nuget push --skip-duplicate ${{ env.OUTPUT_NUPKG_FILE }} -k ${{ secrets.GIT_AUTH_TOKEN }} -s "github"
