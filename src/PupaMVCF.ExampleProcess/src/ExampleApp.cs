@@ -6,7 +6,7 @@ namespace PupaMVCF.ExampleProcess;
 
 public sealed class ExampleApp : WebApp {
    public ExampleApp(IConfiguration configuration, IRouter router,
-      IDatabaseProcessor databaseProcessor, ILogger<WebApp> logger) : base(
+      IDatabaseProcessor databaseProcessor, ILogger<ExampleApp> logger) : base(
       configuration, databaseProcessor, router,
       logger) { }
 }

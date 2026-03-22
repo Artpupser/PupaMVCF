@@ -27,7 +27,7 @@ public class FormComponent : Component {
          if (field.Type == "captcha") {
             sb.Append($$"""
                         <div class="d-flex justify-content-center mb-4">
-                           <div class="cf-turnstile" data-sitekey="{{BaseApp.CaptchaSecureSite}}" data-theme="light" data-size="normal" data-callback="onSuccess"></div>
+                           <div class="cf-turnstile" data-sitekey="{{WebApp.CaptchaSecureSite}}" data-theme="light" data-size="normal" data-callback="onSuccess"></div>
                             <script nonce={{response.Nonce}} src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
                         </div>
                         """);

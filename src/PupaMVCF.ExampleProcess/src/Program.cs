@@ -22,9 +22,9 @@ public static class Program {
          ]);
          return new Router(routerMapBuilder);
       });
-      HeaderComponent.PreloadHeader([("Главная", "/"), ("О нас", "/aboutus")]);
       builder.Services.AddSingleton<IDatabaseProcessor, DatabasePgSqlProcessor>();
       builder.Services.AddHostedService<ExampleApp>();
+      HeaderComponent.PreloadHeader([("Главная", "/"), ("О нас", "/aboutus")]);
       var host = builder.Build();
       await host.RunAsync();
    }
