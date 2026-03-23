@@ -12,7 +12,7 @@ public sealed class HeaderComponent : Component {
                 <nav class='navbar navbar-expand-lg navbar-dark bg-dark sticky-top'>
                   <div class='container'>
                       <a class='navbar-brand fw-bold fs-3 d-flex align-items-center' href='#'>
-                          <img src='/api/public/files?name=icon.webp' alt='Библиотека' width='40' height='40' class='me-3 rounded'>
+                          <img src='/api/public/files?name=icon.webp' alt='icon' width='40' height='40' class='me-3 rounded'>
                 """);
       sb.Append($"<span>{CurrentView.Title}</span></a>");
       sb.Append("""
@@ -24,7 +24,7 @@ public sealed class HeaderComponent : Component {
                 """);
       sb.Append($"""
                  <li class='nav-item'>
-                     <a class='nav-link fs-5 fw-regular' href='/'>Home</a>
+                     <a class='nav-link fs-5 fw-regular' href='/'>Дом</a>
                  </li>
                  """);
       sb.Append(

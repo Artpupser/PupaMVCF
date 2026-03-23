@@ -14,6 +14,7 @@
         <Authors>Artpupser</Authors>
         <Owner>Artpupser</Owner>
         <Company>Artpupser</Company>
+        <EnableDefaultContentItems>false</EnableDefaultContentItems>
         <Description>Template for working with PupaMVCF.Framework</Description>
     </PropertyGroup>
     <ItemGroup>

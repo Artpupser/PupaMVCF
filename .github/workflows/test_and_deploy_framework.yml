@@ -20,27 +20,27 @@ jobs:
     steps:
       - name: 'Checkout'
         uses: actions/checkout@v3
-      
+
       - name: "Setup dotnet"
         uses: actions/setup-dotnet@v3
         with:
           dotnet-version: '8.0.x'
-      
+
       - name: "Resotore lib project"
         run: dotnet restore ${{ env.PROJECT_FRAMEWORK_PATH }}
-      
+
       - name: "Resotore test project"
         run: dotnet restore ${{ env.PROJECT_TESTS_PATH }}
-      
+
       - name: "Build lib project"
         run: dotnet build ${{ env.PROJECT_FRAMEWORK_PATH }}
-      
+
       - name: "Build test project"
         run: dotnet build ${{ env.PROJECT_TESTS_PATH }}
-      
+
       - name: "Run test"
-        run: dotnet test ${{ env.PROJECT_TESTS_PATH }} --no-build --verbosity normal
-  deploy:
+        run: dotnet test ${{ env.PROJECT_TESTS_PATH }} --no-build --verbosity normal   
+    deploy:
     name: "Deploy PupaMVCF.Framework"
     runs-on: 'ubuntu-latest'
     needs: test

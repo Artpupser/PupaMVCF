@@ -24,9 +24,8 @@ public class TemplateView : View {
                     <div class='container'>
                         <div class='row justify-content-center text-center'>
                             <div class='col-lg-8 col-xl-8 p-5'>
-                                <h1 class='fade show display-3 fw-bold mb-4'>Добро пожаловать в мир сварки! 👨‍🏭</h1>
-                                <p class='lead fs-2'>Тысячи лучших изделий в одном месте!</p>
-                                <a class='btn btn-outline-success btn-lg px-5' href='/auth'>Войти</a>
+                                <h1 class='fade show display-3 fw-bold mb-4'>Привет мир! 🌍</h1>
+                                <p class='lead fs-2'>Начало начал!</p>
                             </div>
                         </div>
                     </div>
@@ -36,5 +35,5 @@ public class TemplateView : View {
       await End(request, response, cancellationToken);
    }
 
-   public override string Title => "Холодная ковка 👨‍🏭";
+   public override string Title => "Привет мир! 🌍";
 }

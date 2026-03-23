@@ -18,7 +18,7 @@ public sealed class FooterComponent : Component {
                             <div class='col-md-9 text-center text-md-end'>
                                 <h5 class='fw-bold mb-2'>{{CurrentView.Title}}</h5>
                                 <p class='mb-0 fs-6 text-light opacity-75'>
-                                    Тысячи лучших изделий в одном месте.<br>
+                                    Начало начал.<br>
                                     <small class='text-light'>©{{DateTime.Now.Year}} Все права защищены</small>
                                     </p>
                                 </div>
