@@ -9,6 +9,7 @@ env:
   PROJECT_FRAMEWORK_PATH: 'src/PupaMVCF.Framework/PupaMVCF.Framework.csproj'
   PROJECT_TESTS_PATH: 'src/PupaMVCF.Framework.Tests/PupaMVCF.Framework.Tests.csproj'
   PROJECT_FRAMEWORK_WEB_TEMPLATE_PATH: 'src/PupaMVCF.Web.Template/PupaMVCF.Web.Template.csproj'
+  PACKAGE_OUTPUT_DIR: ${{ github.workspace }}/output
   OUTPUT_NUPKG_FILE: ${{ github.workspace }}/output/*.nupkg
   NUGET_SOURCE_URI: "https://api.nuget.org/v3/index.json"
   GITHUB_USERNAME: "Artpupser"

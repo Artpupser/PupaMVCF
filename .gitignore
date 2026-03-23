@@ -9,7 +9,6 @@ help.md
 .idea
 src/PupaMVCF.ExampleProcess/appsettings.json
 src/PupaMVCF.ExampleMacroProcess/appsettings.json
-*.bat
 
 # dotenv files
 .env
