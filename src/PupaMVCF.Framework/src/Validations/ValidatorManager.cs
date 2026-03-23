@@ -20,6 +20,7 @@ public static partial class ValidatorManager {
          ValidRuleType.CloudflareCaptcha => $"Captcha verification failed",
          ValidRuleType.Email => $"Invalid email address",
          ValidRuleType.Phone => $"Invalid phone number",
+         ValidRuleType.DatePast => "The date is in the past",
          _ => "Unknown field error"
       };
    }
@@ -36,6 +37,7 @@ public static partial class ValidatorManager {
          ValidRuleType.CloudflareCaptcha => await VerifyCaptcha($"{content}", cancellationToken),
          ValidRuleType.Email => await VerifyEmail($"{content}"),
          ValidRuleType.Phone => await VerifyPhone($"{content}"),
+         ValidRuleType.DatePast => content is DateTime time && time > DateTime.Now,
          _ => false
       };
    }

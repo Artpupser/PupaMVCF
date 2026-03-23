@@ -53,6 +53,9 @@ jobs:
         uses: actions/setup-dotnet@v3
         with:
           dotnet-version: '8.0.x'
+          
+      - name: "Create packages directory"
+        run: mkdir -p ${{ env.PACKAGE_OUTPUT_DIR }}
       
       - name: "Restore package"
         run: dotnet restore ${{ env.PROJECT_FRAMEWORK_PATH }}
@@ -87,7 +90,10 @@ jobs:
         uses: actions/setup-dotnet@v3
         with:
           dotnet-version: '8.0.x'
-
+          
+      - name: "Create packages directory"
+        run: mkdir -p ${{ env.PACKAGE_OUTPUT_DIR }}
+        
       - name: "Restore template"
         run: dotnet restore ${{ env.PROJECT_FRAMEWORK_WEB_TEMPLATE_PATH }}
 

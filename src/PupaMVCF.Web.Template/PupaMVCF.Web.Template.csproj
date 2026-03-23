@@ -21,7 +21,7 @@
         <Content Include="**\*" Exclude="bin\**;obj\**"/>
     </ItemGroup>
     <ItemGroup>
-        <PackageReference Include="PupaMVCF.Framework" Version="0.1.0"/>
+        <PackageReference Include="PupaMVCF.Framework" Version="0.1.*"/>
     </ItemGroup>
     <ItemGroup>
         <FilesProject Include="$(ProjectDir)/environment/**/*"/>

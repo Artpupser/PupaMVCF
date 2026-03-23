@@ -9,5 +9,6 @@ public enum ValidRuleType : byte {
    MaxLength = 5,
    CloudflareCaptcha = 6,
    Email = 7,
-   Phone = 8
+   Phone = 8,
+   DatePast = 9
 }
