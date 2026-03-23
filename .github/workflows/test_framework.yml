@@ -6,7 +6,7 @@ on:
       - "main"
 
 env:
-  PROJECT_LIB_PATH: 'src/PupaMVCF.Framework/PupaMVCF.Framework.csproj'
+  PROJECT_FRAMEWORK_PATH: 'src/PupaMVCF.Framework/PupaMVCF.Framework.csproj'
   PROJECT_TESTS_PATH: 'src/PupaMVCF.Framework.Tests/PupaMVCF.Framework.Tests.csproj'
 
   
