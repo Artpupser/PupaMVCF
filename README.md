@@ -11,20 +11,14 @@
 
 ## ✨ Description
 
-**PupaMVCF** is a lightweight and flexible web framework built on top of **.NET 8** and **C# 12**.  
-It is designed to simplify the development of modern web applications using the **Model-View-Controller (MVC)** pattern.
+**PupaMVCF** is a lightweight and flexible web framework built on top of .NET 8 and C# 12.  
+It is designed to simplify the development of modern web applications using the Model-View-Controller (MVC) pattern.
 
-The framework focuses on:
+### The framework focuses on:
 
 - ⚡ simplicity
 - 🧩 extensibility
 - 🚀 performance
-
----
-
-## 🌍 Platform Support
-
-- ✅ Cross-platform (Windows / Linux / macOS)
 
 ---
 
@@ -53,11 +47,17 @@ The framework focuses on:
 
 ---
 
-## 📦 Installation
-
-### Installation
+## 📦 Installation and run
 
 ```bash
 dotnet install new PupaMVCF.Web.Template
+mkdir SolutionName
+cd ./SolutionName
+dotnet new sln ./
+mkdir ProjectName
+cd ./ProjectName
 dotnet new pupamvcf-web
+cd ..
+dotnet sln add ./ProjectName
+cd ./ProjectName
 dotnet run
