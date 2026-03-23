@@ -1,3 +1,5 @@
+using Microsoft.Extensions.Logging;
+
 using PupaMVCF.Framework.Core;
 
 namespace PupaMVCF.Framework.Routing;
@@ -20,17 +22,18 @@ public sealed class Router : IRouter {
       if (route.Middlewares.Count > 0) {
          var cts = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
          var queue = route.GetQueueMiddlewares();
-         var item = queue.Dequeue();
-         var middleware = _map.GetMiddleware(item);
-         try {
-            while (queue.Count > 0) {
-               if (await middleware.Invoke(request, response, cts.Token)) continue;
+         while (queue.Count > 0) {
+            var item = queue.Dequeue();
+            var middleware = _map.GetMiddleware(item);
+            try {
+               var result = await middleware.Invoke(request, response, cts.Token);
+               if (result) continue;
                response.ErrorStack.PushStack($"Middleware {item.Name} returned false, stopping execution of route");
                return;
+            } catch (OperationCanceledException) {
+               response.ErrorStack.PushStack($"Middleware {item.Name} cancelled");
+               return;
             }
-         } catch (OperationCanceledException) {
-            response.ErrorStack.PushStack($"Middleware {item.Name} cancelled");
-            return;
          }
       }
 

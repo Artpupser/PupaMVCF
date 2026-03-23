@@ -14,6 +14,7 @@
         <PackageTags>Web, Framework, Lib, MicroService, gRPC, Https, MVC</PackageTags>
         <RepositoryUrl>https://github.com/Artpupser/PupaMVCF.git</RepositoryUrl>
         <Description>Simplify MVC web framework on csharp</Description>
+        <PackageFlatten>false</PackageFlatten>
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
         <Version>0.1.0</Version>
     </PropertyGroup>
@@ -30,7 +31,7 @@
     </ItemGroup>
     <ItemGroup>
         <Content Include="environment\**\*" Pack="true" PackagePath="contentFiles/any/any/environment/"/>
-        <Content Include="appsettings.example.json" Pack="true" PackagePath="contentFiles\any\any\"/>
+        <!--        <Content Include="appsettings.example.json" Pack="true" PackagePath="contentFiles\any\any\"/>-->
         <Content Include="build\**\*" Pack="true" PackagePath="build\"/>
         <None Include="../../README.md" Pack="true" PackagePath="/"/>
     </ItemGroup>

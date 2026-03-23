@@ -14,9 +14,9 @@
             <PrivateAssets>all</PrivateAssets>
         </PackageReference>
         <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.8.0"/>
-        <PackageReference Include="PupaMVCF.Framework" Version="0.8.0"/>
         <PackageReference Include="xunit" Version="2.5.3"/>
         <PackageReference Include="xunit.runner.visualstudio" Version="2.5.3"/>
+
         <Using Include="Xunit"/>
 
         <None Update="appsettings.json">
@@ -27,11 +27,17 @@
             <CopyToOutputDirectory>Always</CopyToOutputDirectory>
             <CopyToPublishDirectory>Always</CopyToPublishDirectory>
         </Content>
-        <Content Update="secrets.json">
-            <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
-            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-            <CopyToPublishDirectory>Always</CopyToPublishDirectory>
-        </Content>
     </ItemGroup>
-
+    <ItemGroup>
+        <FilesProject Include="$(ProjectDir)/environment/**/*"/>
+    </ItemGroup>
+    <ItemGroup>
+        <ProjectReference Include="..\PupaMVCF.Framework\PupaMVCF.Framework.csproj"/>
+    </ItemGroup>
+    <Target Name="BuildEnv" AfterTargets="Build">
+        <Copy SourceFiles="@(FilesProject)" DestinationFolder="$(TargetDir)/%(RecursiveDir)"/>
+    </Target>
+    <Target Name="PublishEnv" AfterTargets="Publish">
+        <Copy SourceFiles="@(FilesProject)" DestinationFolder="$(PublishDir)/%(RecursiveDir)"/>
+    </Target>
 </Project>

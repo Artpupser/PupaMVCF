@@ -38,9 +38,10 @@ public abstract class MacroApp : IHostedService, ISecureMacroAppContext {
       SecureContextInstance = this;
    }
 
-   public async Task StartAsync(CancellationToken cancellationToken) {
+   public Task StartAsync(CancellationToken cancellationToken) {
       Logger.LogInformation("gRPC server run! {HostName}:{Port}", HostName, Port);
       _server.Start();
+      return Task.CompletedTask;
    }
 
    public async Task StopAsync(CancellationToken cancellationToken) {

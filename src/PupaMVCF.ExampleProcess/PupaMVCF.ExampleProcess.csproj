@@ -12,7 +12,18 @@
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
             <PrivateAssets>all</PrivateAssets>
         </PackageReference>
-        <Protobuf Include="..\Protos\*.proto" GrpcServices="Both"/>
-        <PackageReference Include="PupaMVCF.Framework" Version="0.1.0"/>
+        <Protobuf Include="..\Protos\*.proto" GrpcServices="Both" />
     </ItemGroup>
+    <ItemGroup>
+        <FilesProject Include="$(ProjectDir)/environment/**/*" />
+    </ItemGroup>
+    <ItemGroup>
+      <ProjectReference Include="..\PupaMVCF.Framework\PupaMVCF.Framework.csproj" />
+    </ItemGroup>
+    <Target Name="BuildEnv" AfterTargets="Build">
+        <Copy SourceFiles="@(FilesProject)" DestinationFolder="$(TargetDir)/%(RecursiveDir)" />
+    </Target>
+    <Target Name="PublishEnv" AfterTargets="Publish">
+        <Copy SourceFiles="@(FilesProject)" DestinationFolder="$(PublishDir)/%(RecursiveDir)" />
+    </Target>
 </Project>
