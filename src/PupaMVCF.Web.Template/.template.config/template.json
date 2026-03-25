@@ -11,5 +11,8 @@
     "language": "C#",
     "type": "project"
   },
-  "preferNameDirectory": true
+  "preferNameDirectory": true,
+  "dependencies": {
+    "PupaMVCF.Framework": "0.1.*"
+  }
 }
