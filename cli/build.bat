@@ -3,7 +3,7 @@ setlocal
 mkdir C:\LocalNuget
 dotnet nuget locals all --clear
 dotnet nuget add source C:\LocalNuget -n Local
-cd .\src\PupaMVCF.Framework
+cd ..\src\PupaMVCF.Framework
 echo Generate package PupaMVCF.Framework...
 dotnet publish
 dotnet pack -c Release -o C:\LocalNuget

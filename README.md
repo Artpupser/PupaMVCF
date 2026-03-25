@@ -26,24 +26,25 @@ It is designed to simplify the development of modern web applications using the 
 
 - 🌐 Cross-platform support
 - 🧱 MVC architecture
-- ⚡ gRPC support
+- 📧 gRPC support
 - 🧩 Middleware *(in progress)*
 - 🎨 Views system
 - 💉 Dependency Injection
-- 📊 Logging
 - ⚙️ Configuration system
+- 📊 Logging
 - 📦 Models & Controllers
 - 🧭 Routing
 - ✅ Validations *(in progress)*
 - 🚨 Error handling
 - 🔐 Security:
-    - XSS protection
-    - SQL Injection protection
+    - ⚡ XSS protection
+    - ⚡ SQL Injection protection
 - 🔄 Daemon processing
 - 🧩 Microservices ready
-- 🍪 Cookies
-- 🕒 Sessions *(Kestrel-based)*
 - 🚀 Kestrel integration
+    - ⚡ Cookies *(Kestrel-based)*
+    - ⚡ Sessions *(Kestrel-based)*
+    - ⚡ Pipe writer/reader
 
 ---
 

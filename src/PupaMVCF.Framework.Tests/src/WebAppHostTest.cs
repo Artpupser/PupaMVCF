@@ -43,13 +43,13 @@ public sealed class WebAppHostTest : IAsyncLifetime {
 
    [Fact]
    public async Task HostedService_ShouldRunAndStop() {
-      const int durationWorkInSeconds = 5;
+      const int DURATION_WORK_IN_SECONDS = 5;
       var cts = new CancellationTokenSource();
-      cts.CancelAfter(TimeSpan.FromSeconds(durationWorkInSeconds));
+      cts.CancelAfter(TimeSpan.FromSeconds(DURATION_WORK_IN_SECONDS));
       try {
          await _host.RunAsync(cts.Token);
       } catch (Exception e) {
-         _testOutputHelper.WriteLine($"(CancelAfter) duration in seconds: {durationWorkInSeconds}");
+         _testOutputHelper.WriteLine($"(CancelAfter) duration in seconds: {DURATION_WORK_IN_SECONDS}");
          Assert.Fail(e.Message);
       }
 

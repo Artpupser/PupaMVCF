@@ -39,6 +39,8 @@ public abstract class WebApp : IHostedService, ISecureWebAppContext {
    [ConfigurationKeyName("CaptchaSecureSite")]
    public static string CaptchaSecureSite { get; private set; } = string.Empty;
 
+   [ConfigurationKeyName("HttpsOnly")] public static bool HttpsOnly { get; private set; } = false;
+
    public static readonly JsonSerializerOptions JsonSerializerOptions = new(JsonSerializerDefaults.Web) {
       Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping,
       PropertyNameCaseInsensitive = true,
@@ -58,17 +60,14 @@ public abstract class WebApp : IHostedService, ISecureWebAppContext {
                      throw new DirectoryNotFoundException("Public folder not founded");
       _router = router;
       Client = new HttpClient {
-         Timeout = TimeSpan.FromSeconds(10)
+         Timeout = TimeoutClient
       };
       var builder = new WebHostBuilder().UseKestrel(options => {
          options.Configure(configuration.GetSection("Kestrel"));
-         if (HostName == "localhost") {
-            options.ListenLocalhost(Port);
-            return;
-         }
-
-         options.Listen(IPAddress.Parse(HostName), Port, listenOptions => { listenOptions.UseHttps(); });
-      }).ConfigureServices((host, services) => {
+         options.Listen(IPAddress.Parse(HostName), Port, listenOptions => {
+            if (HttpsOnly) listenOptions.UseHttps();
+         });
+      }).ConfigureServices((_, services) => {
          services.AddDistributedMemoryCache();
          services.AddSession(options => {
             var sessionConfigurationSection = configuration.GetSection("Session");

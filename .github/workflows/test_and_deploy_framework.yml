@@ -9,6 +9,7 @@ env:
   PROJECT_FRAMEWORK_PATH: 'src/PupaMVCF.Framework/PupaMVCF.Framework.csproj'
   PROJECT_TESTS_PATH: 'src/PupaMVCF.Framework.Tests/PupaMVCF.Framework.Tests.csproj'
   PROJECT_FRAMEWORK_WEB_TEMPLATE_PATH: 'src/PupaMVCF.Web.Template/PupaMVCF.Web.Template.csproj'
+  TEMPLATE_OUTPUT_DIR: 'src/PupaMVCF.Web.Template/PupaMVCF.Web.Template/bin/Release/*.nupkg'
   PACKAGE_OUTPUT_DIR: ${{ github.workspace }}/output
   OUTPUT_NUPKG_FILE: ${{ github.workspace }}/output/*.nupkg
   NUGET_SOURCE_URI: "https://api.nuget.org/v3/index.json"
@@ -105,7 +106,7 @@ jobs:
         uses: battila7/get-version-action@v2
 
       - name: "Pack template"
-        run: dotnet pack ${{ env.PROJECT_FRAMEWORK_WEB_TEMPLATE_PATH }} --no-restore --no-build -c Release --include-symbols -p:PackageVersion=${{ steps.version.outputs.version-without-v }} --output ${{ env.PACKAGE_OUTPUT_DIR }}
+        run: dotnet pack ${{ env.PROJECT_FRAMEWORK_WEB_TEMPLATE_PATH }} --no-restore --no-build -c Release --include-symbols -p:PackageVersion=${{ steps.version.outputs.version-without-v }}
 
       - name: "Push template NUGET"
-        run: dotnet nuget push --skip-duplicate ${{ env.OUTPUT_NUPKG_FILE }} -k ${{ secrets.NUGET_AUTH_TOKEN }} -s ${{ env.NUGET_SOURCE_URI }}
+        run: dotnet nuget push --skip-duplicate ${{ env.TEMPLATE_OUTPUT_DIR }} -k ${{ secrets.NUGET_AUTH_TOKEN_TEMPLATE }} -s ${{ env.NUGET_SOURCE_URI }}

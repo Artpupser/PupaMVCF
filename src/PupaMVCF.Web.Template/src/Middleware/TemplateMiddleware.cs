@@ -1,6 +1,7 @@
+using Microsoft.Extensions.Logging;
+
 using PupaMVCF.Framework.Core;
 using PupaMVCF.Framework.Middleware;
-using PupaMVCF.Framework.Routing;
 
 namespace PupaMVCF.Web.Template.Middleware;
 

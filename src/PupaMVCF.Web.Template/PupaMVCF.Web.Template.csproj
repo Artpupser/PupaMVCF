@@ -1,27 +1,29 @@
-<Project Sdk="Microsoft.NET.Sdk.Worker">
+<Project Sdk="Microsoft.NET.Sdk">
     <PropertyGroup>
         <PackageType>Template</PackageType>
-        <TargetFramework>net8.0</TargetFramework>
         <Nullable>enable</Nullable>
         <ImplicitUsings>enable</ImplicitUsings>
-        <UserSecretsId>dotnet-PupaMVCF.Web.Template-58f55945-8c4e-470e-84b4-fc37254fdb0f</UserSecretsId>
         <PackageId>PupaMVCF.Web.Template</PackageId>
-        <Version>0.1.0</Version>
+        <Version>0.1.3</Version>
         <PackageTags>dotnet-new;template;web;mvс;pupamvcf</PackageTags>
         <IncludeContentInPack>true</IncludeContentInPack>
         <IncludeBuildOutput>false</IncludeBuildOutput>
+        <PackageReadmeFile>README.md</PackageReadmeFile>
         <ContentTargetFolders>content</ContentTargetFolders>
+        <TargetFramework>net8.0</TargetFramework>
         <Authors>Artpupser</Authors>
         <Owner>Artpupser</Owner>
+        <OutputType>Exe</OutputType>
         <Company>Artpupser</Company>
         <EnableDefaultContentItems>false</EnableDefaultContentItems>
         <Description>Template for working with PupaMVCF.Framework</Description>
     </PropertyGroup>
     <ItemGroup>
         <Content Include="**\*" Exclude="bin\**;obj\**"/>
+        <None Include="README.md" Pack="true" PackagePath="\"/>
     </ItemGroup>
     <ItemGroup>
-        <PackageReference Include="PupaMVCF.Framework" Version="0.1.*"/>
+        <PackageReference Include="PupaMVCF.Framework" Version="FrameworkVersion"/>
     </ItemGroup>
     <ItemGroup>
         <FilesProject Include="$(ProjectDir)/environment/**/*"/>

@@ -1,3 +1,4 @@
+using System.IO.Pipelines;
 using System.Net;
 using System.Text;
 using System.Text.Json;
@@ -34,7 +35,18 @@ public class Request {
    }
 
    public string? GetCookie(string key) {
-      return _request.Cookies[key];
+      _request.Cookies.TryGetValue(key, out var value);
+      return value;
+   }
+
+   public string? GetFormField(string key) {
+      return _request.Form[key].FirstOrDefault();
+   }
+
+   public T? GetFormField<T>(string key) {
+      var value = _request.Form[key].FirstOrDefault() ?? string.Empty;
+      if (string.IsNullOrWhiteSpace(value)) return default;
+      return (T)Convert.ChangeType(value, typeof(T));
    }
 
    public string GetQueryValue(string key) {
@@ -51,15 +63,20 @@ public class Request {
    #region READ FUNCTIONS
 
    public async Task<byte[]> ReadContent(CancellationToken cancellationToken) {
-      var bytes = new byte[4096];
-      var nextBytes = 1;
-      var length = 0;
-      while (nextBytes > 0) {
-         nextBytes = await _request.Body.ReadAsync(bytes, cancellationToken);
-         length += nextBytes;
+      var reader = PipeReader.Create(_request.Body);
+      using var ms = new MemoryStream();
+
+      while (true) {
+         var result = await reader.ReadAsync(cancellationToken);
+         var buffer = result.Buffer;
+         foreach (var segment in buffer)
+            ms.Write(segment.Span);
+         reader.AdvanceTo(buffer.End);
+         if (result.IsCompleted)
+            break;
       }
 
-      return bytes[..length];
+      return ms.ToArray();
    }
 
    public async Task<string> ReadContentStr(CancellationToken cancellationToken) {

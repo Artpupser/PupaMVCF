@@ -1,3 +1,4 @@
+using System.IO.Pipelines;
 using System.Text;
 using System.Text.Json;
 
@@ -68,6 +69,15 @@ public sealed class Response : IHaveStack<string> {
       _response.Redirect(request.Url);
    }
 
+   public void Redirect(string url) {
+      if (!Uri.TryCreate(url, UriKind.RelativeOrAbsolute, out _)) return;
+      _response.Redirect(url);
+   }
+
+   public void Redirect(Uri uri) {
+      _response.Redirect(uri.AbsoluteUri);
+   }
+
    public void SetCookie(string key, string value, TimeSpan expiresAfter, bool secure = true) {
       _response.Cookies.Append(key, value, new CookieOptions {
          Expires = DateTime.Now + expiresAfter,
@@ -81,7 +91,11 @@ public sealed class Response : IHaveStack<string> {
 
    public async Task SendAsync(CancellationToken cancellationToken) {
       _response.ContentLength = _cache.Length;
-      await _response.Body.WriteAsync(_cache, cancellationToken);
+      var writer = PipeWriter.Create(_response.Body);
+      var memory = writer.GetMemory(_cache.Length);
+      _cache.Span.CopyTo(memory.Span);
+      writer.Advance(_cache.Length);
+      await writer.FlushAsync(cancellationToken);
    }
 
    #region WRITE FUNCTIONS

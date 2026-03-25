@@ -1,18 +1,29 @@
 {
   "$schema": "http://json.schemastore.org/template",
   "author": "Artpupser",
-  "classifications": ["Web", "Framework", "MVC"],
+  "classifications": [
+    "Web",
+    "Framework",
+    "MVC"
+  ],
   "identity": "PupaMVCF.Web.Template",
   "name": "Simplify web template",
-  "description": "Template for working with PupaMVCF.Framework",
-  "shortName": "pupamvcf-web",
   "sourceName": "PupaMVCF.Web.Template",
+  "shortName": "pupamvcf-web",
+  "defaultName": "PupaMVCF.Web.App",
+  "description": "Template for working with PupaMVCF.Framework",
   "tags": {
     "language": "C#",
     "type": "project"
   },
   "preferNameDirectory": true,
-  "dependencies": {
-    "PupaMVCF.Framework": "0.1.*"
+  "symbols": {
+    "FrameworkVersion": {
+      "type": "parameter",
+      "datatype": "string",
+      "defaultValue": "0.1.*",
+      "replaces": "FrameworkVersion",
+      "description": "Version of PupaMVCF.Framework"
+    }
   }
 }

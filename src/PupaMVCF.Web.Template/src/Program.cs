@@ -1,3 +1,6 @@
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
+
 using PupaMVCF.Framework.Controllers;
 using PupaMVCF.Framework.Middleware;
 using PupaMVCF.Framework.Routing;
