@@ -1,10 +1,14 @@
+using PupaMVCF.Framework.Components;
 using PupaMVCF.Framework.Core;
-using PupaMVCF.Framework.Views;
 using PupaMVCF.Web.Template.Components;
 
 namespace PupaMVCF.Web.Template.Views;
 
 public class TemplateView : View {
+   public override HeadLink[] GetLinks() {
+      return [new HeadLink("stylesheet", $"{StaticPrefix}bootstrap.css")];
+   }
+
    protected override async Task Start(Request request, Response response, string stylesForBody,
       CancellationToken cancellationToken) {
       await base.Start(request, response, stylesForBody, cancellationToken);

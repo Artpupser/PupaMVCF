@@ -24,7 +24,7 @@
         <None Include="README.md" Pack="true" PackagePath="\"/>
     </ItemGroup>
     <ItemGroup>
-        <PackageReference Include="PupaMVCF.Framework" Version="0.1.*"/>
+        <PackageReference Include="PupaMVCF.Framework" Version="0.1.4"/>
     </ItemGroup>
     <ItemGroup>
         <FilesProject Include="$(ProjectDir)/environment/**/*"/>

@@ -91,10 +91,17 @@ jobs:
         uses: actions/setup-dotnet@v3
         with:
           dotnet-version: '8.0.x'
+          
+      - name: "Restore template"
+        run: dotnet restore ${{ env.PROJECT_FRAMEWORK_WEB_TEMPLATE_PATH }}
+
+      - name: "Build template"
+        run: dotnet build ${{ env.PROJECT_FRAMEWORK_WEB_TEMPLATE_PATH }} --no-restore -c Release
 
       - name: "Get version"
         id: version
         uses: battila7/get-version-action@v2
+
 
       - name: "Pack template"
         run: dotnet pack ${{ env.PROJECT_FRAMEWORK_WEB_TEMPLATE_PATH }} --no-restore --no-build -c Release --include-symbols -p:PackageVersion=${{ steps.version.outputs.version-without-v }}
