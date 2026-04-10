@@ -22,6 +22,19 @@ It is designed to simplify the development of modern web applications using the 
 
 ---
 
+### v0.1.4
+
+- Pipe-based request body reading and response writing via `System.IO.Pipelines`
+- Form data reading support with typed `GetFormField<T>`
+- Extended `Redirect` overloads with URI validation
+- Full validation system: modules for email, string/number range, required fields, Cloudflare Captcha
+- `ValidFromRequest<T>` — validates model directly from request, returns `Option<T>`
+- `Option<T>` improvements: `implicit operator bool`, singleton `Fail`, `Out(out T)` pattern
+- Extended session config: expiry, SameSite, custom cookie name
+- Added `HttpsEnable`, `Domain`, `StaticPrefix` config options
+- Middleware can now be declared directly on `[ControllerHandler]` attribute
+- CI: web template now published with a separate NuGet token
+
 ## 🔥 Features
 
 - 🌐 Cross-platform support
