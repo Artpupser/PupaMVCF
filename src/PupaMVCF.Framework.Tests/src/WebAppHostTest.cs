@@ -7,15 +7,20 @@ using PupaMVCF.Framework.Controllers;
 using PupaMVCF.Framework.Core;
 using PupaMVCF.Framework.Middleware;
 using PupaMVCF.Framework.Routing;
+using PupaMVCF.Framework.Validations;
+using PupaMVCF.Framework.Validations.Modules;
 
 using Xunit.Abstractions;
 
 namespace PupaMVCF.Framework.Tests;
 
-public sealed class TestWebApp : WebApp {
-   public TestWebApp(IConfiguration configuration, IRouter router, ILogger<WebApp> logger) : base(configuration, router,
-      logger) { }
-}
+public sealed class TestWebApp(
+   IConfiguration configuration,
+   IRouter router,
+   IValidatorManager validator,
+   ILogger<TestWebApp> logger)
+   : WebApp(configuration, router, validator,
+      logger);
 
 [Collection("Test")]
 public sealed class WebAppHostTest : IAsyncLifetime {
@@ -28,6 +33,12 @@ public sealed class WebAppHostTest : IAsyncLifetime {
 
    public Task InitializeAsync() {
       var builder = Host.CreateApplicationBuilder([]);
+      builder.Services.AddSingleton<IValidatorManager, ModifyValidatorManager>(_ =>
+         new ModifyValidatorManager(builder.Configuration,
+         [
+            new NeedValidatorModule(), new EmailValidatorModule(), new NumberRangeValidatorModule(),
+            new StringRangeValidatorModule(), new CloudflareCaptchaValidatorModule()
+         ]));
       builder.Services.AddSingleton<IRouter, Router>(_ => {
          var routerMapBuilder = new RouterMapBuilder();
          routerMapBuilder.AddMiddlewareRange([new LoggerMiddleware()]);
@@ -48,10 +59,10 @@ public sealed class WebAppHostTest : IAsyncLifetime {
       cts.CancelAfter(TimeSpan.FromSeconds(DURATION_WORK_IN_SECONDS));
       try {
          await _host.RunAsync(cts.Token);
-      } catch (Exception e) {
-         _testOutputHelper.WriteLine($"(CancelAfter) duration in seconds: {DURATION_WORK_IN_SECONDS}");
+      } catch (OperationCanceledException e) { } catch (Exception e) {
          Assert.Fail(e.Message);
       }
+
 
       Assert.True(true, "Application started and worked successful!");
    }

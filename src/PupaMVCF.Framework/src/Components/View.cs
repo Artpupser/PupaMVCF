@@ -2,22 +2,16 @@ using System.Text;
 
 using Microsoft.Extensions.Configuration;
 
-using PupaMVCF.Framework.Components;
 using PupaMVCF.Framework.Core;
+using PupaMVCF.Framework.Extensions;
 
-namespace PupaMVCF.Framework.Views;
+namespace PupaMVCF.Framework.Components;
 
 public abstract class View : Component {
    public abstract string Title { get; }
-   protected static string[] _cssFiles = [];
    protected readonly StringBuilder _builder;
    public override StringBuilder Builder => _builder;
-   public static IReadOnlyList<string> CssFiles => _cssFiles;
-
-   internal static void LoadCssFiles(IConfiguration configuration) {
-      var cssFilesConfigurationSection = configuration.GetSection("Css");
-      _cssFiles = cssFilesConfigurationSection.GetChildren().Select(x => $"/api/public/files?name={x.Value}").ToArray();
-   }
+   public abstract HeadLink[] GetLinks();
 
    protected View() : base(null) {
       _builder = new StringBuilder();

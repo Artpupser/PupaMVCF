@@ -5,16 +5,24 @@ using PupaMVCF.Framework.Core;
 namespace PupaMVCF.Framework.Controllers;
 
 public sealed class StaticController : Controller {
+   private static readonly char[] InvalidPathChars = ['\\', '/', '.', '\0', ':', '*', '?', '"', '<', '>', '|'];
+
    [ControllerHandler("/api/public/files", HttpMethodType.GET)]
    private async Task GetPublicFileHandler(Request request, Response response, CancellationToken cancellationToken) {
-      response.StatusCode = 404;
-      var path = request.GetQueryValue("name");
-      if (path == string.Empty || path.Any(x => x is '\\' or '/'))
+      if (!request.GetQueryValue("name").Out(out var name)) {
+         response.PushError("Path not valid", 400);
          return;
-      var file = WebApp.SecureContextInstance.PublicFolder.GetFileIn(path);
-      if (file == null)
+      }
+
+      cancellationToken.ThrowIfCancellationRequested();
+
+      var file = WebApp.Context.PublicFolder.GetFileIn(name);
+
+      if (file is null) {
+         response.PushError("File not found", 404);
          return;
-      response.StatusCode = 200;
+      }
+
       response.SetCache(TimeSpan.FromDays(1));
       await response.WriteVirtualFileToCache(file, cancellationToken);
    }

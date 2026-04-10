@@ -6,7 +6,7 @@ using PupaMVCF.Framework.Middleware;
 namespace PupaMVCF.Framework.Routing;
 
 public sealed class RouterMap {
-   private readonly FrozenDictionary<(string pattern, HttpMethodType methodType), RouteValue>
+   private readonly FrozenDictionary<RouteKey, RouteValue>
       _routes;
 
    private readonly FrozenDictionary<Type, IMiddleware> _middlewares;
@@ -15,18 +15,19 @@ public sealed class RouterMap {
    public RouterMap(RouterMapBuilder builder) {
       _routes = builder.BuildRoutes();
       _middlewares = builder.BuildMiddlewares();
-      Error = _routes.FirstOrDefault(x => x.Key.pattern == "*").Value;
+      Error = _routes.FirstOrDefault(x => x.Key.Pattern == "*").Value;
    }
 
    public IMiddleware GetMiddleware(Type type) {
       return _middlewares[type];
    }
 
-   public RouteValue GetRoute(Request request) {
-      return _routes[(request.RawUrl, request.HttpMethodType)];
-   }
-
-   public bool TryGetRoute(Request request, out RouteValue routeValue) {
-      return _routes.TryGetValue((request.RawUrl, request.HttpMethodType), out routeValue);
+   public Option<RouteValue> GetRoute(Request request) {
+      try {
+         var result = _routes[request.ToRouteKey()];
+         return Option<RouteValue>.Ok(result);
+      } catch {
+         return Option<RouteValue>.Fail();
+      }
    }
 }

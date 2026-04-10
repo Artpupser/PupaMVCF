@@ -1,4 +1,4 @@
-using System.IO.Pipelines;
+using System.Buffers;
 using System.Text;
 using System.Text.Json;
 
@@ -6,17 +6,15 @@ using Microsoft.AspNetCore.Http;
 
 using PupaLib.FileIO;
 
-using PupaMVCF.Framework.Core.Extra;
-using PupaMVCF.Framework.Views;
+using PupaMVCF.Framework.Components;
 
 namespace PupaMVCF.Framework.Core;
 
-public sealed class Response : IHaveStack<string> {
+public sealed class Response : IErrorController {
    private Memory<byte> _cache;
    private readonly HttpResponse _response;
-   private readonly Stack<string> _errorStack;
+   private readonly Stack<string> _errorsStack;
    private MimeContentType _mimeContentType;
-   private const string EmptyJsonContent = "{}";
    public string Nonce { get; }
 
    public int StatusCode {
@@ -34,7 +32,7 @@ public sealed class Response : IHaveStack<string> {
 
    public Response(HttpResponse response) {
       Nonce = Convert.ToBase64String(System.Security.Cryptography.RandomNumberGenerator.GetBytes(8));
-      _errorStack = [];
+      _errorsStack = [];
       _response = response;
       _response.StatusCode = 200;
       _cache = Memory<byte>.Empty;
@@ -45,18 +43,23 @@ public sealed class Response : IHaveStack<string> {
          $"script-src 'self' 'nonce-{Nonce}' https://challenges.cloudflare.com https://*.cloudflare.com https://cdn-cgi.challenge-platform.com  https://cdn.jsdelivr.net; connect-src 'self' https:; frame-src https://challenges.cloudflare.com https://*.cloudflare.com; object-src 'none';";
    }
 
-   #region ErrorStack
+   #region IErrorController
 
-   public IHaveStack<string> ErrorStack => this;
-   public IReadOnlyList<string> StackContentList => _errorStack.ToList();
-   int IHaveStack<string>.LengthStack => _errorStack.Count;
+   public IEnumerable<string> Errors => _errorsStack;
 
-   void IHaveStack<string>.PushStack(string v) {
-      _errorStack.Push(v);
+   public void PushError(string message) {
+      _response.StatusCode = 400;
+      _errorsStack.Push(message);
    }
 
-   string IHaveStack<string>.PopStack() {
-      return _errorStack.Pop();
+   public void PushError(int status) {
+      _response.StatusCode = status;
+      _errorsStack.Push("Error description, in status");
+   }
+
+   public void PushError(string message, int status) {
+      _response.StatusCode = status;
+      _errorsStack.Push(message);
    }
 
    #endregion
@@ -65,17 +68,12 @@ public sealed class Response : IHaveStack<string> {
       _response.Headers[key] = value;
    }
 
-   public void Reopen(Request request) {
-      _response.Redirect(request.Url);
-   }
-
    public void Redirect(string url) {
-      if (!Uri.TryCreate(url, UriKind.RelativeOrAbsolute, out _)) return;
-      _response.Redirect(url);
+      _response.Redirect(url, false);
    }
 
    public void Redirect(Uri uri) {
-      _response.Redirect(uri.AbsoluteUri);
+      _response.Redirect(uri.AbsoluteUri, false);
    }
 
    public void SetCookie(string key, string value, TimeSpan expiresAfter, bool secure = true) {
@@ -91,11 +89,7 @@ public sealed class Response : IHaveStack<string> {
 
    public async Task SendAsync(CancellationToken cancellationToken) {
       _response.ContentLength = _cache.Length;
-      var writer = PipeWriter.Create(_response.Body);
-      var memory = writer.GetMemory(_cache.Length);
-      _cache.Span.CopyTo(memory.Span);
-      writer.Advance(_cache.Length);
-      await writer.FlushAsync(cancellationToken);
+      await _response.Body.WriteAsync(_cache, cancellationToken);
    }
 
    #region WRITE FUNCTIONS
@@ -104,14 +98,16 @@ public sealed class Response : IHaveStack<string> {
       _cache = content;
    }
 
-   public void WriteEmptyJsonToCache() {
-      MimeContentType = MimeContentType.Json;
-      WriteStrToCache(EmptyJsonContent);
+   public void WriteBytesToCache(Memory<byte> content) {
+      _cache = content;
    }
 
    public void WriteTJsonToCache<T>(T content) where T : class {
       MimeContentType = MimeContentType.Json;
-      WriteStrToCache(JsonSerializer.Serialize(content, WebApp.JsonSerializerOptions));
+      var buffer = new ArrayBufferWriter<byte>();
+      using var writer = new Utf8JsonWriter(buffer);
+      JsonSerializer.Serialize(writer, content, WebApp.JsonSerializerOptions);
+      _cache = buffer.WrittenMemory.ToArray();
    }
 
    public async Task WriteVirtualFileToCache(VirtualFile file, CancellationToken cancellationToken) {

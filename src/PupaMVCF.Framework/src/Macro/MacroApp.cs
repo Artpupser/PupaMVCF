@@ -10,19 +10,19 @@ using PupaMVCF.Framework.Extensions;
 
 namespace PupaMVCF.Framework.Macro;
 
-public abstract class MacroApp : IHostedService, ISecureMacroAppContext {
+public abstract class MacroApp : IHostedService, IMacroAppContext {
    protected readonly Server _server;
    public VirtualFolder PublicFolder { get; }
    public IConfiguration Configuration { get; }
    public ILogger<MacroApp> Logger { get; }
-   public static ISecureMacroAppContext SecureContextInstance { get; private set; } = null!;
+   public static IMacroAppContext ContextInstance { get; private set; } = null!;
    [ConfigurationKeyName("Host")] public static string HostName { get; private set; } = string.Empty;
 
    [ConfigurationKeyName("Port")] public static ushort Port { get; private set; } = 50001;
 
    protected MacroApp(IConfiguration configuration, IEnumerable<ServerServiceDefinition> services,
       ILogger<MacroApp> logger) {
-      if (SecureContextInstance != null)
+      if (ContextInstance != null)
          throw new InvalidOperationException("MacroApp provider has already been configured");
       configuration.BindConfigurationWithClass(this);
       Configuration = configuration;
@@ -35,7 +35,7 @@ public abstract class MacroApp : IHostedService, ISecureMacroAppContext {
          }
       };
       foreach (var serviceItem in services) _server.Services.Add(serviceItem);
-      SecureContextInstance = this;
+      ContextInstance = this;
    }
 
    public Task StartAsync(CancellationToken cancellationToken) {

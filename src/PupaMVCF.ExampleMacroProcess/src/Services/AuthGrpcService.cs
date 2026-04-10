@@ -9,7 +9,7 @@ namespace PupaMVCF.ExampleMacroProcess.Services;
 
 public class AuthGrpcService : AuthService.AuthServiceBase {
    public override Task<VerifyResponse> Verify(VerifyRequest request, ServerCallContext context) {
-      MacroApp.SecureContextInstance.Logger.LogInformation("RPC -> Code: {Code}", request.Code);
+      MacroApp.ContextInstance.Logger.LogInformation("RPC -> Code: {Code}", request.Code);
       return Task.FromResult(new VerifyResponse {
          Success = true
       });

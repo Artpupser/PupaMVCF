@@ -5,6 +5,7 @@
         <Nullable>enable</Nullable>
         <ImplicitUsings>enable</ImplicitUsings>
         <UserSecretsId>dotnet-PupaMVCF.ExampleTest-b94247b3-8079-43a7-8d20-ecfb818247fd</UserSecretsId>
+        <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
     </PropertyGroup>
 
     <ItemGroup>
@@ -12,18 +13,18 @@
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
             <PrivateAssets>all</PrivateAssets>
         </PackageReference>
-        <Protobuf Include="..\Protos\*.proto" GrpcServices="Both" />
+        <Protobuf Include="..\Protos\*.proto" GrpcServices="Both"/>
     </ItemGroup>
     <ItemGroup>
-        <FilesProject Include="$(ProjectDir)/environment/**/*" />
+        <FilesProject Include="$(ProjectDir)/environment/**/*"/>
     </ItemGroup>
     <ItemGroup>
-      <ProjectReference Include="..\PupaMVCF.Framework\PupaMVCF.Framework.csproj" />
+        <ProjectReference Include="..\PupaMVCF.Framework\PupaMVCF.Framework.csproj"/>
     </ItemGroup>
     <Target Name="BuildEnv" AfterTargets="Build">
-        <Copy SourceFiles="@(FilesProject)" DestinationFolder="$(TargetDir)/%(RecursiveDir)" />
+        <Copy SourceFiles="@(FilesProject)" DestinationFolder="$(TargetDir)/%(RecursiveDir)"/>
     </Target>
     <Target Name="PublishEnv" AfterTargets="Publish">
-        <Copy SourceFiles="@(FilesProject)" DestinationFolder="$(PublishDir)/%(RecursiveDir)" />
+        <Copy SourceFiles="@(FilesProject)" DestinationFolder="$(PublishDir)/%(RecursiveDir)"/>
     </Target>
 </Project>

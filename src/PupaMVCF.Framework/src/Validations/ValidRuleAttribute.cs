@@ -2,11 +2,12 @@ namespace PupaMVCF.Framework.Validations;
 
 [AttributeUsage(AttributeTargets.Property, AllowMultiple = true)]
 public sealed class ValidRuleAttribute : Attribute {
-   public ValidRuleType Type { get; init; }
-   public int Value { get; init; }
+   /// <summary>
+   /// Separator :~:, Example: number_range:~:0 15
+   /// </summary>
+   public string Instruction { get; }
 
-   public ValidRuleAttribute(ValidRuleType type, int value = 0) {
-      Type = type;
-      Value = value;
+   public ValidRuleAttribute(string instruction) {
+      Instruction = instruction;
    }
 }

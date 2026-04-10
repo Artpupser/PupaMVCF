@@ -1,20 +1,22 @@
 using PupaMVCF.Framework.Core;
-using PupaMVCF.Framework.Views;
+using PupaMVCF.Framework.Components;
 
 namespace PupaMVCF.Framework.Components;
 
+public readonly record struct HeadLink(string Rel, string Href);
+
 public sealed class HeadComponent : Component {
-   public IReadOnlyList<string> CssFiles { get; }
+   private HeadLink[] Links { get; }
    public string Title { get; }
 
-   public HeadComponent(IComponentParent parent, string title, IReadOnlyList<string> cssFiles) : base(parent) {
+   public HeadComponent(IComponentParent parent, string title, HeadLink[] links) : base(parent) {
       Title = title;
-      CssFiles = cssFiles;
+      Links = links;
    }
 
    public HeadComponent(View view) : base(view) {
       Title = view.Title;
-      CssFiles = View.CssFiles;
+      Links = view.GetLinks();
    }
 
    public override Task Html(Request request, Response response, CancellationToken cancellationToken) {
@@ -22,10 +24,10 @@ public sealed class HeadComponent : Component {
       sb.Append("<head>");
       sb.Append("<meta charset='UTF-8'>");
       sb.Append(TagTitle(Title));
-      sb.Append(TagLink(response, @"icon", @"/api/public/files?name=icon.webp"));
+      sb.Append(TagLink(response, @"icon", $@"{StaticPrefix}icon.webp"));
       sb.Append(TagLink(response, @"preconnect", @"https://challenges.cloudflare.com"));
-      foreach (var cssFile in CssFiles)
-         sb.Append(TagLink(response, @"stylesheet", cssFile));
+      foreach (var link in Links)
+         sb.Append(TagLink(response, link.Rel, link.Href));
       sb.Append("</head>");
       return Task.CompletedTask;
    }

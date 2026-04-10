@@ -2,7 +2,7 @@ using PupaMVCF.ExampleProcess.Views;
 using PupaMVCF.Framework.Controllers;
 using PupaMVCF.Framework.Core;
 using PupaMVCF.Framework.Middleware;
-using PupaMVCF.Framework.Views;
+using PupaMVCF.Framework.Components;
 
 namespace PupaMVCF.ExampleProcess.Controllers;
 
@@ -19,7 +19,7 @@ public sealed class PagesController : Controller {
       await SendPage(request, response, view, cancellationToken);
    }
 
-   [ControllerHandler("/verify", HttpMethodType.GET)]
+   [ControllerHandler("/verify", HttpMethodType.GET, typeof(LoggerMiddleware))]
    private async Task VerifyPageHandler(Request request, Response response, CancellationToken cancellationToken) {
       var view = new VerifyPageView();
       await SendPage(request, response, view, cancellationToken);

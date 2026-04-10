@@ -13,7 +13,7 @@ public readonly struct RouteValue {
       Middlewares = middlewares.ToFrozenSet();
    }
 
-   public Queue<Type> GetQueueMiddlewares() {
+   public Queue<Type> GetQueueMiddlewareTypes() {
       return new Queue<Type>(Middlewares);
    }
 }

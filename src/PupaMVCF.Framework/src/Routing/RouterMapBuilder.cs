@@ -7,7 +7,7 @@ using PupaMVCF.Framework.Middleware;
 namespace PupaMVCF.Framework.Routing;
 
 public sealed class RouterMapBuilder {
-   private readonly Dictionary<(string pattern, HttpMethodType methodType), RouteValue>
+   private readonly Dictionary<RouteKey, RouteValue>
       _routes = [];
 
    private readonly Dictionary<Type, IMiddleware> _middlewares = [];
@@ -19,7 +19,7 @@ public sealed class RouterMapBuilder {
 
    public RouterMapBuilder AddController(Controller controller) {
       foreach (var tuple in controller.GetReflectionHandler())
-         _routes.Add((tuple.Attribute.Pattern, tuple.Attribute.HttpMethodType),
+         _routes.Add(new RouteKey(tuple.Attribute.Pattern, tuple.Attribute.HttpMethodType),
             new RouteValue(tuple.Func, tuple.Attribute.Middlewares));
       return this;
    }
@@ -37,7 +37,7 @@ public sealed class RouterMapBuilder {
    }
 
 
-   public FrozenDictionary<(string pattern, HttpMethodType methodType), RouteValue>
+   public FrozenDictionary<RouteKey, RouteValue>
       BuildRoutes() {
       return _routes.ToFrozenDictionary();
    }

@@ -5,13 +5,16 @@ using System.Text.Json;
 
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Extensions;
+using Microsoft.Extensions.Logging;
+
+using PupaMVCF.Framework.Routing;
 
 namespace PupaMVCF.Framework.Core;
 
 public class Request {
    private readonly HttpRequest _request;
-   public PathString RawUrl { get; }
-   public PathString RawUrlBase { get; }
+   public string RawUrl { get; }
+   public string RawUrlBase { get; }
    public string? Url => _request.GetEncodedUrl();
    public HttpMethodType HttpMethodType { get; }
    public MimeContentType MimeContentType { get; }
@@ -28,67 +31,78 @@ public class Request {
       RawUrlBase = _request.PathBase.Value ?? string.Empty;
       if (RawUrl == string.Empty)
          return;
-      var index = RawUrl.Value.IndexOf("?", StringComparison.CurrentCultureIgnoreCase);
+      var index = RawUrl.IndexOf("?", StringComparison.CurrentCultureIgnoreCase);
       if (index != -1)
-         RawUrl = RawUrl.Value[..index];
+         RawUrl = RawUrl[..index];
       Session = session;
    }
 
-   public string? GetCookie(string key) {
-      _request.Cookies.TryGetValue(key, out var value);
-      return value;
+   public Option<string> GetCookie(string key) {
+      return _request.Cookies.TryGetValue(key, out var value) ? Option<string>.Ok(value) : Option<string>.Fail();
    }
 
-   public string? GetFormField(string key) {
-      return _request.Form[key].FirstOrDefault();
+   public Option<string> GetFormField(string key) {
+      var result = _request.Form[key].FirstOrDefault();
+      return result == null ? Option<string>.Fail() : Option<string>.Ok(result);
    }
 
-   public T? GetFormField<T>(string key) {
-      var value = _request.Form[key].FirstOrDefault() ?? string.Empty;
-      if (string.IsNullOrWhiteSpace(value)) return default;
-      return (T)Convert.ChangeType(value, typeof(T));
+   public Option<T> GetFormField<T>(string key) {
+      var result = _request.Form[key].FirstOrDefault();
+      return string.IsNullOrWhiteSpace(result)
+         ? Option<T>.Fail()
+         : Option<T>.Ok((T)Convert.ChangeType(result, typeof(T)));
    }
 
-   public string GetQueryValue(string key) {
-      return _request.Query[key].FirstOrDefault() ?? string.Empty;
+   public Option<string> GetQueryValue(string key) {
+      var result = _request.Query[key].FirstOrDefault();
+      return result == null ? Option<string>.Fail() : Option<string>.Ok(result);
+   }
+
+   public RouteKey ToRouteKey() {
+      return new RouteKey(RawUrl, HttpMethodType);
    }
 
    public override string ToString() {
-      var sb = new StringBuilder();
-      sb.Append(
-         $"RawUrl: {RawUrl}\nMethod: {HttpMethodType}\nQuery: {string.Join(',', _request.Query)}\nAgent: {UserAgent}\nMime: {MimeContentType}\n");
-      return sb.ToString();
+      return $"[{HttpMethodType}] {Url}";
    }
 
    #region READ FUNCTIONS
 
-   public async Task<byte[]> ReadContent(CancellationToken cancellationToken) {
-      var reader = PipeReader.Create(_request.Body);
-      using var ms = new MemoryStream();
+   public async Task<Option<byte[]>> ReadContent(CancellationToken cancellationToken) {
+      try {
+         if (_request.ContentLength is > 0) {
+            var buffer = new byte[_request.ContentLength.Value];
+            await _request.Body.ReadExactlyAsync(buffer, cancellationToken);
+            return Option<byte[]>.Ok(buffer);
+         }
 
-      while (true) {
-         var result = await reader.ReadAsync(cancellationToken);
-         var buffer = result.Buffer;
-         foreach (var segment in buffer)
-            ms.Write(segment.Span);
-         reader.AdvanceTo(buffer.End);
-         if (result.IsCompleted)
-            break;
+         var ms = new MemoryStream();
+         await _request.Body.CopyToAsync(ms, cancellationToken);
+         return Option<byte[]>.Ok(ms.ToArray());
+      } catch {
+         return Option<byte[]>.FailLog(WebApp.Context.Logger, "Read bytes from stream exception");
       }
-
-      return ms.ToArray();
    }
 
-   public async Task<string> ReadContentStr(CancellationToken cancellationToken) {
-      return Encoding.UTF8.GetString(await ReadContent(cancellationToken));
+   public async Task<Option<string>> ReadContentStr(CancellationToken cancellationToken) {
+      try {
+         if (!(await ReadContent(cancellationToken)).Out(out var bytes)) return Option<string>.Fail();
+         var result = Encoding.UTF8.GetString(bytes);
+         return Option<string>.Ok(result);
+      } catch {
+         return Option<string>.FailLog(WebApp.Context.Logger, $"Encoding to string exception");
+      }
    }
 
-   public async Task<T> ReadContentT<T>(CancellationToken cancellationToken) where T : class {
-      return JsonSerializer.Deserialize<T>(await ReadContentStr(cancellationToken), WebApp.JsonSerializerOptions)!;
-   }
-
-   public async Task<T?> ReadSafeContentT<T>(CancellationToken cancellationToken) where T : class {
-      return JsonSerializer.Deserialize<T>(await ReadContentStr(cancellationToken), WebApp.JsonSerializerOptions);
+   public async Task<Option<T>> ReadContentT<T>(CancellationToken cancellationToken) where T : class {
+      try {
+         var result = await JsonSerializer.DeserializeAsync<T>(_request.Body,
+            WebApp.JsonSerializerOptions,
+            cancellationToken);
+         return Option<T>.Ok(result!);
+      } catch {
+         return Option<T>.Fail();
+      }
    }
 
    #endregion

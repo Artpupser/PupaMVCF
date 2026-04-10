@@ -1,10 +1,15 @@
 using PupaMVCF.ExampleProcess.Components;
 using PupaMVCF.Framework.Core;
-using PupaMVCF.Framework.Views;
+using PupaMVCF.Framework.Components;
+using PupaMVCF.Framework.Extensions;
 
 namespace PupaMVCF.ExampleProcess.Views;
 
 public sealed class MainPageView : View {
+   public override HeadLink[] GetLinks() {
+      return [new HeadLink("stylesheet", $"{StaticPrefix}bootstrap.css")];
+   }
+
    protected override async Task Start(Request request, Response response, string stylesForBody,
       CancellationToken cancellationToken) {
       await base.Start(request, response, stylesForBody, cancellationToken);

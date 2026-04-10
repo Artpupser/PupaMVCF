@@ -1,6 +1,6 @@
-using PupaMVCF.Framework;
 using PupaMVCF.Framework.Components;
 using PupaMVCF.Framework.Core;
+using PupaMVCF.Framework.Extensions;
 
 namespace PupaMVCF.ExampleProcess.Components;
 
@@ -10,10 +10,12 @@ public class FormComponent : Component {
    private readonly string _action;
    private readonly string _id;
    private readonly List<FormComponentFiled> _fields = [];
+   public string CaptchaSite { get; }
 
    public FormComponent(IComponentParent? parent, string action, string id) : base(parent) {
       _action = action;
       _id = id;
+      CaptchaSite = WebApp.Context.Configuration.GetAny<string>("CaptchaSecureSite");
    }
 
    public void Push(string type, string name, string label, bool require = true) {
@@ -25,12 +27,12 @@ public class FormComponent : Component {
       sb.Append($"<form  method='POST' action='{_action}' id='{_id}'>");
       foreach (var field in _fields) {
          if (field.Type == "captcha") {
-            sb.Append($$"""
-                        <div class="d-flex justify-content-center mb-4">
-                           <div class="cf-turnstile" data-sitekey="{{WebApp.CaptchaSecureSite}}" data-theme="light" data-size="normal" data-callback="onSuccess"></div>
-                            <script nonce={{response.Nonce}} src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
-                        </div>
-                        """);
+            sb.Append($"""
+                       <div class="d-flex justify-content-center mb-4">
+                          <div class="cf-turnstile" data-sitekey="{CaptchaSite}" data-theme="light" data-size="normal" data-callback="onSuccess"></div>
+                           <script nonce={response.Nonce} src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
+                       </div>
+                       """);
             continue;
          }
 

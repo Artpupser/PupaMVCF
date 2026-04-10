@@ -1,10 +1,15 @@
 using PupaMVCF.ExampleProcess.Components;
 using PupaMVCF.Framework.Core;
-using PupaMVCF.Framework.Views;
+using PupaMVCF.Framework.Components;
+using PupaMVCF.Framework.Extensions;
 
 namespace PupaMVCF.ExampleProcess.Views;
 
 public sealed class VerifyPageView : View {
+   public override HeadLink[] GetLinks() {
+      return [new HeadLink("stylesheet", $"{StaticPrefix}bootstrap.css")];
+   }
+
    protected override async Task Start(Request request, Response response, string stylesForBody,
       CancellationToken cancellationToken) {
       await base.Start(request, response, stylesForBody, cancellationToken);
@@ -24,7 +29,7 @@ public sealed class VerifyPageView : View {
       var codeForm = new FormComponent(this, "/verify", "verify");
       codeForm.Push("text", "code", "Код подтверждения");
       await codeForm.Html(request, response, cancellationToken);
-      sb.Append(TagJs(response, "verify.js"));
+      sb.Append(TagJs(response, "index.js"));
       sb.Append("</div></div></div></div></div></section>");
       await End(request, response, cancellationToken);
    }
