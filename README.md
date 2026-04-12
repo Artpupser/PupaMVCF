@@ -25,7 +25,7 @@ It is designed to simplify the development of modern web applications using the 
 ### v0.1.5
 
 - Extended PupaMVCF.Framework.Tests with GET, POST requests and views testing
-- Fixed validator character substitution (i -> y)
+- Fixed validator: character substitution in `for` cycle (i -> y)
 
 ### v0.1.4
 
