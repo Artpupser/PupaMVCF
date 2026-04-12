@@ -22,6 +22,11 @@ It is designed to simplify the development of modern web applications using the 
 
 ---
 
+### v0.1.5
+
+- Extended PupaMVCF.Framework.Tests with GET, POST requests and views testing
+- Fixed validator character substitution (i -> y)
+
 ### v0.1.4
 
 - Pipe-based request body reading and response writing via `System.IO.Pipelines`
