@@ -4,13 +4,13 @@
         <Nullable>enable</Nullable>
         <ImplicitUsings>enable</ImplicitUsings>
         <PackageId>PupaMVCF.Web.Template</PackageId>
-        <Version>0.1.5</Version>
+        <Version>0.1.6</Version>
         <PackageTags>dotnet-new;template;web;mvс;pupamvcf</PackageTags>
         <IncludeContentInPack>true</IncludeContentInPack>
         <IncludeBuildOutput>false</IncludeBuildOutput>
         <PackageReadmeFile>README.md</PackageReadmeFile>
         <ContentTargetFolders>content</ContentTargetFolders>
-        <TargetFramework>net8.0</TargetFramework>
+        <TargetFramework>net10.0</TargetFramework>
         <PackageLicenseExpression>MIT</PackageLicenseExpression>
         <Authors>Artpupser</Authors>
         <Owner>Artpupser</Owner>
@@ -24,7 +24,7 @@
         <None Include="README.md" Pack="true" PackagePath="\"/>
     </ItemGroup>
     <ItemGroup>
-        <PackageReference Include="PupaMVCF.Framework" Version="0.1.4"/>
+        <PackageReference Include="PupaMVCF.Framework" Version="0.1.6"/>
     </ItemGroup>
     <ItemGroup>
         <FilesProject Include="$(ProjectDir)/environment/**/*"/>

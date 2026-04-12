@@ -1,7 +1,7 @@
 # 🚀 PupaMVCF
 
-![.NET](https://img.shields.io/badge/.NET-8.0-blue)
-![C#](https://img.shields.io/badge/C%23-12-purple)
+![.NET](https://img.shields.io/badge/.NET-10.0-blue)
+![C#](https://img.shields.io/badge/C%23-14-purple)
 ![Platform](https://img.shields.io/badge/platform-cross--platform-lightgrey)
 ![License](https://img.shields.io/badge/license-MIT-green)
 ![Status](https://img.shields.io/badge/status-active-success)
@@ -11,7 +11,7 @@
 
 ## ✨ Description
 
-**PupaMVCF** is a lightweight and flexible web framework built on top of .NET 8 and C# 12.  
+**PupaMVCF** is a lightweight and flexible web framework built on top of .NET 10 and C# 14.  
 It is designed to simplify the development of modern web applications using the Model-View-Controller (MVC) pattern.
 
 ### The framework focuses on:
@@ -21,6 +21,9 @@ It is designed to simplify the development of modern web applications using the 
 - 🚀 performance
 
 ---
+
+### v0.1.6
+- Changed .NET version .net8.0 -> .net10.0
 
 ### v0.1.5
 

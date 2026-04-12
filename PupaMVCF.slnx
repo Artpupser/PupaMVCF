@@ -1,0 +1,9 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/PupaMVCF.ExampleMacroProcess/PupaMVCF.ExampleMacroProcess.csproj" />
+    <Project Path="src/PupaMVCF.ExampleProcess/PupaMVCF.ExampleProcess.csproj" />
+    <Project Path="src/PupaMVCF.Framework.Tests/PupaMVCF.Framework.Tests.csproj" />
+    <Project Path="src/PupaMVCF.Framework/PupaMVCF.Framework.csproj" />
+    <Project Path="src/PupaMVCF.Web.Template/PupaMVCF.Web.Template.csproj" />
+  </Folder>
+</Solution>
