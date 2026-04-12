@@ -32,7 +32,7 @@ public sealed class ModifyValidatorManager : IValidatorManager {
             var rules = new string[attributes.Length];
             var options = new string[attributes.Length];
             for (var y = 0; y < attributes.Length; y++) {
-               var split = attributes[i].Instruction.Split("~");
+               var split = attributes[y].Instruction.Split("~");
                rules[y] = split[0];
                options[y] = split.Length == 1 ? string.Empty : split[1];
             }

@@ -6,7 +6,7 @@ namespace PupaMVCF.Framework.Validations.Modules;
 
 public sealed class NumberRangeValidatorModule : IValidatorModule {
    public string RuleId => "number_range";
-   public string Message => "Value not in range";
+   public string Message => "Number value not in range";
 
    public Task<bool> Valid(object? instance, string options, Request request, Response response,
       CancellationToken cancellationToken) {
