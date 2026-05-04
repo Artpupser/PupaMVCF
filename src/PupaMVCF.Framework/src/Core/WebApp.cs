@@ -41,7 +41,6 @@ public abstract class WebApp : IHostedService, IWebAppContext {
       IValidatorManager validatorManager, ILogger<WebApp> logger) {
       if (Context != null)
          throw new InvalidOperationException("App provider has already been configured");
-      configuration.BindConfigurationWithClass(this);
       Logger = logger;
       Validator = validatorManager;
       Configuration = configuration;
