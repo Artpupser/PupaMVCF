@@ -2,4 +2,4 @@ using PupaMVCF.Framework.Core;
 
 namespace PupaMVCF.Framework.Routing;
 
-public record RouteKey(string Pattern, HttpMethodType Method);
+public readonly record struct RouteKey(string Pattern, HttpMethodType Method);

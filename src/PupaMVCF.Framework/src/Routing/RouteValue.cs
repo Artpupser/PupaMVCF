@@ -1,19 +1,14 @@
 using System.Collections.Frozen;
-
-using PupaMVCF.Framework.Controllers;
+using System.Reflection;
 
 namespace PupaMVCF.Framework.Routing;
 
-public readonly struct RouteValue {
-   public Controller.ControllerHandlerDelegate Handler { get; }
-   public FrozenSet<Type> Middlewares { get; }
+public readonly struct RouteValue(Type controllerType, MethodInfo method, Type[] middlewareTypes) {
+   public Type ControllerType { get; } = controllerType;
+   public MethodInfo Method { get; } = method;
+   public FrozenSet<Type> Middlewares { get; } = middlewareTypes.ToFrozenSet();
 
-   public RouteValue(Controller.ControllerHandlerDelegate handler, IEnumerable<Type> middlewares) {
-      Handler = handler;
-      Middlewares = middlewares.ToFrozenSet();
-   }
-
-   public Queue<Type> GetQueueMiddlewareTypes() {
+   public Queue<Type> ToQueueMiddlewareTypes() {
       return new Queue<Type>(Middlewares);
    }
 }

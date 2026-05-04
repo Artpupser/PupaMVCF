@@ -26,13 +26,20 @@ public sealed class TestHostFixture : IAsyncLifetime {
             new NeedValidatorModule(), new EmailValidatorModule(), new NumberRangeValidatorModule(),
             new StringRangeValidatorModule(), new CloudflareCaptchaValidatorModule(), new TestValidatorModule()
          ]));
+
+      builder.Services.AddScoped<LoggerMiddleware>();
+      builder.Services.AddScoped<ErrorMiddleware>();
+
+      builder.Services.AddScoped<StaticController>();
+      builder.Services.AddScoped<ErrorControllerOnlyJson>();
+      builder.Services.AddScoped<TestController>();
+
       builder.Services.AddSingleton<IRouter, Router>(_ => {
          var routerMapBuilder = new RouterMapBuilder();
-         routerMapBuilder.AddMiddlewareRange([new LoggerMiddleware()]);
-         routerMapBuilder.AddControllerRange([
-            new StaticController(), new ErrorControllerOnlyJson(), new TestController()
-         ]);
-         return new Router(routerMapBuilder);
+         routerMapBuilder.AddController<StaticController>();
+         routerMapBuilder.AddController<ErrorControllerOnlyJson>();
+         routerMapBuilder.AddController<TestController>();
+         return new Router(routerMapBuilder, builder.Services.BuildServiceProvider());
       });
       builder.Services.AddHostedService<TestApp>();
       Configuration = builder.Configuration;

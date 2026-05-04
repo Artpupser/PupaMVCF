@@ -9,7 +9,7 @@ public sealed class StaticController : Controller {
 
    [ControllerHandler("/api/public/files", HttpMethodType.GET)]
    private async Task GetPublicFileHandler(Request request, Response response, CancellationToken cancellationToken) {
-      if (!request.GetQueryValue("name").Out(out var name)) {
+      if (!request.GetQuery("name").Out(out var name)) {
          response.PushError("Path not valid", 400);
          return;
       }

@@ -1,11 +1,13 @@
-using System.IO.Pipelines;
 using System.Net;
 using System.Text;
 using System.Text.Json;
 
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Extensions;
-using Microsoft.Extensions.Logging;
+using Microsoft.AspNetCore.Http.Features;
+using Microsoft.Extensions.Primitives;
+
+using PupaLib.Core;
 
 using PupaMVCF.Framework.Routing;
 
@@ -13,27 +15,23 @@ namespace PupaMVCF.Framework.Core;
 
 public class Request {
    private readonly HttpRequest _request;
-   public string RawUrl { get; }
-   public string RawUrlBase { get; }
-   public string? Url => _request.GetEncodedUrl();
+   public string Path => _request.Path;
+   public string PathBase => _request.PathBase;
+   public string QueryString => _request.QueryString.Value;
+   public string Url => _request.GetEncodedUrl();
    public HttpMethodType HttpMethodType { get; }
    public MimeContentType MimeContentType { get; }
-   public ISession? Session { get; }
-   public string? SessionGUID => Session?.Id;
+   public IFeatureCollection FeatureCollection { get; }
+   public ISession Session { get; }
    public IPAddress IpAddress => _request.HttpContext.Connection.RemoteIpAddress;
-   public string UserAgent => $"{_request.Headers["User-Agent"]}";
+   public IRequestHeader RequestHeader { get; }
 
    public Request(HttpRequest request, ISession session) {
       _request = request;
       MimeContentType = MimeContent.GetMimeType(request.ContentType);
       HttpMethodType = HttpMethodManager.HardGetHttpMethod(request.Method);
-      RawUrl = _request.Path.Value ?? string.Empty;
-      RawUrlBase = _request.PathBase.Value ?? string.Empty;
-      if (RawUrl == string.Empty)
-         return;
-      var index = RawUrl.IndexOf("?", StringComparison.CurrentCultureIgnoreCase);
-      if (index != -1)
-         RawUrl = RawUrl[..index];
+      FeatureCollection = request.HttpContext.Features;
+      RequestHeader = new HeaderDictionaryProvider(_request.Headers);
       Session = session;
    }
 
@@ -42,24 +40,33 @@ public class Request {
    }
 
    public Option<string> GetFormField(string key) {
-      var result = _request.Form[key].FirstOrDefault();
-      return result == null ? Option<string>.Fail() : Option<string>.Ok(result);
+      if (_request.Form.TryGetValue(key, out var value) &&
+          !StringValues.IsNullOrEmpty(value))
+         return Option<string>.Ok(value.ToString());
+
+      return Option<string>.Fail();
    }
 
-   public Option<T> GetFormField<T>(string key) {
-      var result = _request.Form[key].FirstOrDefault();
-      return string.IsNullOrWhiteSpace(result)
-         ? Option<T>.Fail()
-         : Option<T>.Ok((T)Convert.ChangeType(result, typeof(T)));
+   public Option<IEnumerable<IFormFile>> GetFormFiles(string key) {
+      var result = _request.Form.Files.GetFiles(key);
+      return result == null ? Option<IEnumerable<IFormFile>>.Fail() : Option<IEnumerable<IFormFile>>.Ok(result);
    }
 
-   public Option<string> GetQueryValue(string key) {
-      var result = _request.Query[key].FirstOrDefault();
-      return result == null ? Option<string>.Fail() : Option<string>.Ok(result);
+   public Option<IFormFile> GetFormFile(string key) {
+      var result = _request.Form.Files.GetFile(key);
+      return result == null ? Option<IFormFile>.Fail() : Option<IFormFile>.Ok(result);
+   }
+
+   public Option<string> GetQuery(string key) {
+      if (_request.Query.TryGetValue(key, out var value) &&
+          !StringValues.IsNullOrEmpty(value))
+         return Option<string>.Ok(value.ToString());
+
+      return Option<string>.Fail();
    }
 
    public RouteKey ToRouteKey() {
-      return new RouteKey(RawUrl, HttpMethodType);
+      return new RouteKey(Path, HttpMethodType);
    }
 
    public override string ToString() {
@@ -70,17 +77,17 @@ public class Request {
 
    public async Task<Option<byte[]>> ReadContent(CancellationToken cancellationToken) {
       try {
-         if (_request.ContentLength is > 0) {
-            var buffer = new byte[_request.ContentLength.Value];
-            await _request.Body.ReadExactlyAsync(buffer, cancellationToken);
-            return Option<byte[]>.Ok(buffer);
-         }
-
-         var ms = new MemoryStream();
+         _request.EnableBuffering();
+         _request.Body.Position = 0;
+         using var ms = new MemoryStream();
          await _request.Body.CopyToAsync(ms, cancellationToken);
-         return Option<byte[]>.Ok(ms.ToArray());
+         var data = ms.ToArray();
+         _request.Body.Position = 0;
+         return data.Length == 0
+            ? Option<byte[]>.Fail()
+            : Option<byte[]>.Ok(data);
       } catch {
-         return Option<byte[]>.FailLog(WebApp.Context.Logger, "Read bytes from stream exception");
+         return Option<byte[]>.Fail();
       }
    }
 
@@ -90,7 +97,7 @@ public class Request {
          var result = Encoding.UTF8.GetString(bytes);
          return Option<string>.Ok(result);
       } catch {
-         return Option<string>.FailLog(WebApp.Context.Logger, $"Encoding to string exception");
+         return Option<string>.Fail();
       }
    }
 
@@ -106,14 +113,4 @@ public class Request {
    }
 
    #endregion
-
-   [Obsolete("Danger work")]
-   public void LoadQueryToT<T>(T obj) {
-      var props = obj!.GetType().GetProperties();
-      foreach (var key in _request.Query) {
-         var prop = props.FirstOrDefault(x => x.Name == key.Value);
-         if (prop == null) continue;
-         prop.SetValue(obj, _request.Query[key.Value].FirstOrDefault() ?? string.Empty);
-      }
-   }
 }

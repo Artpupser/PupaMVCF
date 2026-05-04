@@ -18,15 +18,20 @@ public static class Program {
             new NeedValidatorModule(), new EmailValidatorModule(), new NumberRangeValidatorModule(),
             new StringRangeValidatorModule(), new CloudflareCaptchaValidatorModule()
          ]));
-      builder.Services.AddSingleton<IRouter, Router>(_ => {
+      builder.Services.AddScoped<StaticController>();
+      builder.Services.AddScoped<ErrorControllerOnlyJson>();
+      builder.Services.AddScoped<PagesController>();
+      builder.Services.AddScoped<FruitsController>();
+      builder.Services.AddScoped<LoggerMiddleware>();
+      builder.Services.AddSingleton<RouterMapBuilder>(_ => {
          var routerMapBuilder = new RouterMapBuilder();
-         routerMapBuilder.AddMiddlewareRange([new LoggerMiddleware(), new ErrorMiddleware()]);
-         routerMapBuilder.AddControllerRange([
-            new StaticController(), new ErrorControllerOnlyJson(), new PagesController(),
-            new FruitsController()
-         ]);
-         return new Router(routerMapBuilder);
+         routerMapBuilder.AddController<StaticController>();
+         routerMapBuilder.AddController<ErrorControllerOnlyJson>();
+         routerMapBuilder.AddController<PagesController>();
+         routerMapBuilder.AddController<FruitsController>();
+         return routerMapBuilder;
       });
+      builder.Services.AddSingleton<IRouter, Router>();
       builder.Services.AddHostedService<ExampleApp>();
       HeaderComponent.PreloadHeader([("Главная", "/"), ("О нас", "/aboutus")]);
       var host = builder.Build();

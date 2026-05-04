@@ -2,15 +2,15 @@
   "$schema": "http://json.schemastore.org/template",
   "author": "Artpupser",
   "classifications": [
-    "Web",
-    "Framework",
-    "MVC"
+    "web",
+    "framework",
+    "mvc"
   ],
-  "identity": "PupaMVCF.Web.Template",
-  "name": "Simplify web template",
-  "sourceName": "PupaMVCF.Web.Template",
-  "shortName": "pupamvcf-web",
-  "defaultName": "PupaMVCF.Web.App",
+  "identity": "PupaMVCF.Template",
+  "name": "Template for PupaMVCF",
+  "sourceName": "PupaMVCF.Template",
+  "shortName": "pupamvcf-app",
+  "defaultName": "PupaMVCF.App",
   "description": "Template for working with PupaMVCF.Framework",
   "tags": {
     "language": "C#",

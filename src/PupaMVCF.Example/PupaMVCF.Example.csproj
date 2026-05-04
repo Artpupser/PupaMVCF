@@ -6,15 +6,9 @@
         <ImplicitUsings>enable</ImplicitUsings>
         <UserSecretsId>dotnet-PupaMVCF.ExampleTest-b94247b3-8079-43a7-8d20-ecfb818247fd</UserSecretsId>
         <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
+        <RootNamespace>PupaMVCF.ExampleProcess</RootNamespace>
     </PropertyGroup>
-
-    <ItemGroup>
-        <PackageReference Include="Grpc.Tools" Version="2.78.0">
-            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-            <PrivateAssets>all</PrivateAssets>
-        </PackageReference>
-        <Protobuf Include="..\Protos\*.proto" GrpcServices="Both"/>
-    </ItemGroup>
+    
     <ItemGroup>
         <FilesProject Include="$(ProjectDir)/environment/**/*"/>
     </ItemGroup>

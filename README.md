@@ -22,7 +22,15 @@ It is designed to simplify the development of modern web applications using the 
 
 ---
 
+### v0.1.7
+
+- Timed: removed protos, ExampleMacroProcess (need base)
+- Removed ReadExactlyAsync - optimization on Request.cs
+- Rebuilding router system on DI (Dependency Injection) base
+- Big rework controller & middleware system
+
 ### v0.1.6
+
 - Changed .NET version .net8.0 -> .net10.0
 
 ### v0.1.5
