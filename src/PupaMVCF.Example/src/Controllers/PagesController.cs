@@ -6,10 +6,11 @@ using PupaMVCF.Framework.Components;
 
 namespace PupaMVCF.ExampleProcess.Controllers;
 
-public sealed class PagesController : Controller {
+public sealed class PagesController(ILogger<PagesController> logger) : Controller {
    [ControllerHandler("/", HttpMethodType.GET, typeof(LoggerMiddleware))]
    private async Task MainPageHandler(Request request, Response response, CancellationToken cancellationToken) {
       var view = new MainPageView();
+      logger.Log(LogLevel.Warning, "Testing controller DI constructor");
       await SendPage(request, response, view, cancellationToken);
    }
 
