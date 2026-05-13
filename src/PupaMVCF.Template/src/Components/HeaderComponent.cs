@@ -3,9 +3,7 @@ using PupaMVCF.Framework.Core;
 
 namespace PupaMVCF.Web.Template.Components;
 
-public sealed class HeaderComponent : Component {
-   public HeaderComponent(IComponentParent? parent) : base(parent) { }
-
+public sealed class HeaderComponent(IComponentParent? parent) : Component(parent) {
    public override Task Html(Request request, Response response, CancellationToken cancellationToken) {
       var sb = Builder;
       sb.Append("""

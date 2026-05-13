@@ -8,7 +8,7 @@
         <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
         <RootNamespace>PupaMVCF.ExampleProcess</RootNamespace>
     </PropertyGroup>
-    
+
     <ItemGroup>
         <FilesProject Include="$(ProjectDir)/environment/**/*"/>
     </ItemGroup>

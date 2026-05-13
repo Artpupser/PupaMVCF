@@ -25,10 +25,11 @@
         <None Include="README.md" Pack="true" PackagePath="\"/>
     </ItemGroup>
     <ItemGroup>
-        <PackageReference Include="PupaMVCF.Framework" Version="0.1.6"/>
+        <FilesProject Include="$(ProjectDir)/environment/**/*"/>
     </ItemGroup>
     <ItemGroup>
-        <FilesProject Include="$(ProjectDir)/environment/**/*"/>
+        <PackageReference Include="dotenv.net" Version="4.0.2"/>
+        <PackageReference Include="PupaMVCF.Framework" Version="0.1.6"/>
     </ItemGroup>
     <Target Name="BuildEnv" AfterTargets="Build">
         <Copy SourceFiles="@(FilesProject)" DestinationFolder="$(TargetDir)/%(RecursiveDir)"/>
