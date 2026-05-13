@@ -1,4 +1,4 @@
-﻿name: Deploy to nuget
+﻿name: Deploy PupaMVCF.Framework nuget pacakge 
 
 on:
   push:
@@ -8,67 +8,67 @@ on:
 env:
   PROJECT_FRAMEWORK_PATH: 'src/PupaMVCF.Framework/PupaMVCF.Framework.csproj'
   PROJECT_TESTS_PATH: 'src/PupaMVCF.Tests/PupaMVCF.Tests.csproj'
-  PROJECT_FRAMEWORK_WEB_TEMPLATE_PATH: 'src/PupaMVCF.Template/PupaMVCF.Template.csproj'
-  PACKAGE_OUTPUT_DIR: ${{ github.workspace }}/output
-  OUTPUT_NUPKG_FILE: ${{ github.workspace }}/output/*.nupkg
+  PROJECT_FRAMEWORK_TEMPLATE_PATH: 'src/PupaMVCF.Template/PupaMVCF.Template.csproj'
   NUGET_SOURCE_URI: "https://api.nuget.org/v3/index.json"
   GITHUB_USERNAME: "Artpupser"
+  OUTPUT_NUPKG_FILE: ${{ github.workspace }}/output/*.nupkg
+  PACKAGE_OUTPUT_DIR: ${{ github.workspace }}/output
+
+permissions:
+  contents: read
   
 jobs:
   test:
     name: "Testing PupaMVCF.Framework"
     runs-on: "ubuntu-latest"
     steps:
-      - name: 'Checkout'
-        uses: actions/checkout@v3
-
-      - name: "Setup dotnet"
-        uses: actions/setup-dotnet@v3
+      - name: 'Setup packages, checkout@v6 setup-dotnet@v5 actions/cache@v5'
+        uses: actions/checkout@v6
+        uses: actions/setup-dotnet@v5
         with:
-          dotnet-version: '8.0.x'
+          dotnet-version: '10.0.x'
+        uses: actions/cache@v5
+        with:
+          path: ~/.nuget/pacakges
+          key: nuget-${{ runner.os }}-${{ hashFiles('**/*.csproj') }}
 
-      - name: "Resotore lib project"
+      - name: "Resotore csharp projects"
         run: dotnet restore ${{ env.PROJECT_FRAMEWORK_PATH }}
-
-      - name: "Resotore test project"
         run: dotnet restore ${{ env.PROJECT_TESTS_PATH }}
 
-      - name: "Build lib project"
+      - name: "Build csharp projects"
         run: dotnet build ${{ env.PROJECT_FRAMEWORK_PATH }}
-
-      - name: "Build test project"
         run: dotnet build ${{ env.PROJECT_TESTS_PATH }}
 
-      - name: "Run test"
-        run: dotnet test ${{ env.PROJECT_TESTS_PATH }} --no-build --verbosity normal   
+      - name: "Run xunit test"
+        run: dotnet test ${{ env.PROJECT_TESTS_PATH }} --no-build --configuration Release --verbosity normal --logger "trx;LogFileName=test-report.trx"
+
+      - name: "Upload test report"
+          uses: actions/upload-artifact@v7
+          with:
+            name: test-report
+            path: '**/*.trx'
   deploy:
     name: "Deploy PupaMVCF.Framework"
     runs-on: 'ubuntu-latest'
     needs: test
     steps:
-      - name: 'Checkout'
-        uses: actions/checkout@v3
-      
-      - name: "Setup dotnet"
-        uses: actions/setup-dotnet@v3
+      - name: 'Setup packages, checkout@v6 setup-dotnet@v5'
+        uses: actions/checkout@v6
+        uses: actions/setup-dotnet@v5
         with:
-          dotnet-version: '8.0.x'
-          
-      - name: "Create packages directory"
+          dotnet-version: '10.0.x'
+      
+      - name: "Process compiling package"
         run: mkdir -p ${{ env.PACKAGE_OUTPUT_DIR }}
-      
-      - name: "Restore package"
         run: dotnet restore ${{ env.PROJECT_FRAMEWORK_PATH }}
-      
-      - name: "Build package"
         run: dotnet build ${{ env.PROJECT_FRAMEWORK_PATH }} --no-restore -c Release
-      
-      - name: "Get version"
-        id: version
-        uses: battila7/get-version-action@v2
+
+      - name: Extract version
+        run: echo "VERSION=${GITHUB_REF#refs/tags/v}" >> $GITHUB_ENV
       
       - name: "Pack pacakge"
-        run: dotnet pack ${{ env.PROJECT_FRAMEWORK_PATH }} --no-restore --no-build -c Release --include-symbols -p:PackageVersion=${{ steps.version.outputs.version-without-v }} --output ${{ env.PACKAGE_OUTPUT_DIR }}
+        run: dotnet pack ${{ env.PROJECT_FRAMEWORK_PATH }} --no-restore --no-build -c Release --include-symbols -p:PackageVersion=${{ env.VERSION }}  --output ${{ env.PACKAGE_OUTPUT_DIR }}
       
       - name: "Push package NUGET"
         run: dotnet nuget push --skip-duplicate ${{ env.OUTPUT_NUPKG_FILE }} -k ${{ secrets.NUGET_AUTH_TOKEN }} -s ${{ env.NUGET_SOURCE_URI }}
@@ -83,23 +83,21 @@ jobs:
     runs-on: 'ubuntu-latest'
     needs: [test, deploy]
     steps:
-      - name: 'Checkout'
-        uses: actions/checkout@v3
-
-      - name: "Setup dotnet"
-        uses: actions/setup-dotnet@v3
+      - name: 'Setup packages, checkout@v6 setup-dotnet@v5'
+        uses: actions/checkout@v6
+        uses: actions/setup-dotnet@v5
         with:
-          dotnet-version: '8.0.x'
+          dotnet-version: '10.0.x'
+       
           
-      - name: "Restore template"
-        run: dotnet restore ${{ env.PROJECT_FRAMEWORK_WEB_TEMPLATE_PATH }}
+      - name: "Process compiling template"
+        run: dotnet restore ${{ env.PROJECT_FRAMEWORK_TEMPLATE_PATH }}
 
-      - name: "Get version"
-        id: version
-        uses: battila7/get-version-action@v2
+      - name: Extract version
+        run: echo "VERSION=${GITHUB_REF#refs/tags/v}" >> $GITHUB_ENV
 
       - name: "Pack template"
-        run: dotnet pack ${{ env.PROJECT_FRAMEWORK_WEB_TEMPLATE_PATH }} --no-restore --no-build -c Release --include-symbols -p:PackageVersion=${{ steps.version.outputs.version-without-v }} --output ${{ env.PACKAGE_OUTPUT_DIR }}
+        run: dotnet pack ${{ env.PROJECT_FRAMEWORK_TEMPLATE_PATH }} --no-restore --no-build -c Release --include-symbols -p:PackageVersion=${{ env.VERSION }}  --output ${{ env.PACKAGE_OUTPUT_DIR }}
         
       - name: "Push template NUGET"
         run: dotnet nuget push --skip-duplicate ${{ env.OUTPUT_NUPKG_FILE }} -k ${{ secrets.NUGET_AUTH_TOKEN_TEMPLATE }} -s ${{ env.NUGET_SOURCE_URI }}
