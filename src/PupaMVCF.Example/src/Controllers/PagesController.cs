@@ -13,18 +13,6 @@ public sealed class PagesController : Controller {
       await SendPage(request, response, view, cancellationToken);
    }
 
-   [ControllerHandler("/auth", HttpMethodType.GET, typeof(LoggerMiddleware))]
-   private async Task AuthPageHandler(Request request, Response response, CancellationToken cancellationToken) {
-      var view = new AuthPageView();
-      await SendPage(request, response, view, cancellationToken);
-   }
-
-   [ControllerHandler("/verify", HttpMethodType.GET, typeof(LoggerMiddleware))]
-   private async Task VerifyPageHandler(Request request, Response response, CancellationToken cancellationToken) {
-      var view = new VerifyPageView();
-      await SendPage(request, response, view, cancellationToken);
-   }
-
    private static async Task SendPage(Request request, Response response, View view,
       CancellationToken cancellationToken) {
       await view.Html(request, response, cancellationToken);
