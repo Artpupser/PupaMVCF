@@ -19,18 +19,19 @@
         <Version>0.1.7</Version>
     </PropertyGroup>
     <ItemGroup>
-        <PackageReference Include="Microsoft.AspNetCore.Server.Kestrel" Version="2.3.9" />
-        <PackageReference Include="Microsoft.AspNetCore.Session" Version="2.3.9" />
-        <PackageReference Include="Microsoft.Extensions.Caching.Memory" Version="10.0.5" />
-        <PackageReference Include="Microsoft.Extensions.Configuration" Version="10.0.5" />
-        <PackageReference Include="Microsoft.Extensions.Hosting" Version="10.0.5" />
-        <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="10.0.5" />
-        <PackageReference Include="PupaLib.Core" Version="0.0.2" />
-        <PackageReference Include="PupaLib.FileIO" Version="1.2.0" />
+        <PackageReference Include="Dapper" Version="2.1.72"/>
+        <PackageReference Include="Microsoft.AspNetCore.Server.Kestrel" Version="2.3.9"/>
+        <PackageReference Include="Microsoft.AspNetCore.Session" Version="2.3.9"/>
+        <PackageReference Include="Microsoft.Extensions.Caching.Memory" Version="10.0.5"/>
+        <PackageReference Include="Microsoft.Extensions.Configuration" Version="10.0.5"/>
+        <PackageReference Include="Microsoft.Extensions.Hosting" Version="10.0.5"/>
+        <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="10.0.5"/>
+        <PackageReference Include="PupaLib.Core" Version="0.0.2"/>
+        <PackageReference Include="PupaLib.FileIO" Version="1.2.0"/>
     </ItemGroup>
     <ItemGroup>
-        <Content Include="environment\**\*" Pack="true" PackagePath="contentFiles/any/any/environment/" />
-        <Content Include="build\**\*" Pack="true" PackagePath="build\" />
-        <None Include="../../README.md" Pack="true" PackagePath="/" />
+        <Content Include="environment\**\*" Pack="true" PackagePath="contentFiles/any/any/environment/"/>
+        <Content Include="build\**\*" Pack="true" PackagePath="build\"/>
+        <None Include="../../README.md" Pack="true" PackagePath="/"/>
     </ItemGroup>
 </Project>
