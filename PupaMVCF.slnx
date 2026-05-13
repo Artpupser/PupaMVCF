@@ -1,8 +1,8 @@
 <Solution>
-  <Folder Name="/src/">
-    <Project Path="src/PupaMVCF.Example/PupaMVCF.Example.csproj" />
-    <Project Path="src/PupaMVCF.Framework/PupaMVCF.Framework.csproj" />
-    <Project Path="src/PupaMVCF.Template/PupaMVCF.Template.csproj" />
-    <Project Path="src/PupaMVCF.Tests/PupaMVCF.Tests.csproj" />
-  </Folder>
+    <Folder Name="/src/">
+        <Project Path="src/PupaMVCF.Example/PupaMVCF.Example.csproj"/>
+        <Project Path="src/PupaMVCF.Framework/PupaMVCF.Framework.csproj"/>
+        <Project Path="src/PupaMVCF.Template/PupaMVCF.Template.csproj"/>
+        <Project Path="src/PupaMVCF.Tests/PupaMVCF.Tests.csproj"/>
+    </Folder>
 </Solution>

@@ -5,9 +5,6 @@ using Dapper;
 
 using PupaLib.Core;
 
-using PupaMVCF.Framework.Core;
-using PupaMVCF.Framework.Models;
-
 namespace PupaMVCF.Framework.Database;
 
 public abstract class Repository<T>(IDatabaseConnectionFactory databaseConnectionFactory) {

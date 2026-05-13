@@ -29,7 +29,6 @@ public sealed class TestHostFixture : IAsyncLifetime {
 
       builder.Services.AddScoped<LoggerMiddleware>();
       builder.Services.AddScoped<ErrorMiddleware>();
-
       builder.Services.AddScoped<StaticController>();
       builder.Services.AddScoped<ErrorControllerOnlyJson>();
       builder.Services.AddScoped<TestController>();
