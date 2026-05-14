@@ -15,13 +15,12 @@ using PupaLib.FileIO;
 using PupaMVCF.Framework.Extensions;
 using PupaMVCF.Framework.Routing;
 using PupaMVCF.Framework.Validations;
-using PupaMVCF.Framework.Components;
 
 namespace PupaMVCF.Framework.Core;
 
 public abstract class WebApp : IHostedService, IWebAppContext {
    public static IWebAppContext Context { get; private set; } = null!;
-   protected readonly IRouter _router;
+   private readonly IRouter _router;
    private readonly IWebHost _host;
 
    public VirtualFolder PublicFolder { get; }
@@ -42,7 +41,6 @@ public abstract class WebApp : IHostedService, IWebAppContext {
       IValidatorManager validatorManager, ILogger<WebApp> logger) {
       if (Context != null)
          throw new InvalidOperationException("App provider has already been configured");
-      configuration.BindConfigurationWithClass(this);
       Logger = logger;
       Validator = validatorManager;
       Configuration = configuration;
@@ -85,9 +83,8 @@ public abstract class WebApp : IHostedService, IWebAppContext {
 
    public async Task StartAsync(CancellationToken cancellationToken) {
       Logger.LogInformation(
-         "WebApp [Kestrel] server starting on [http://{0}:{1}/] or [https://{2}:{3}/]",
+         "WebApp [Kestrel] server starting on http://{Ip}:{Port}/",
          Configuration.GetAny<string>("Ip"),
-         Configuration.GetAny<int>("Port"), Configuration.GetAny<string>("Ip"),
          Configuration.GetAny<int>("Port"));
       await _host.StartAsync(cancellationToken);
    }

@@ -1,7 +1,10 @@
 using System.Collections.Frozen;
+using System.Reflection;
 
+using PupaLib.Core;
+
+using PupaMVCF.Framework.Controllers;
 using PupaMVCF.Framework.Core;
-using PupaMVCF.Framework.Middleware;
 
 namespace PupaMVCF.Framework.Routing;
 
@@ -9,17 +12,27 @@ public sealed class RouterMap {
    private readonly FrozenDictionary<RouteKey, RouteValue>
       _routes;
 
-   private readonly FrozenDictionary<Type, IMiddleware> _middlewares;
    public RouteValue? Error { get; }
 
    public RouterMap(RouterMapBuilder builder) {
-      _routes = builder.BuildRoutes();
-      _middlewares = builder.BuildMiddlewares();
-      Error = _routes.FirstOrDefault(x => x.Key.Pattern == "*").Value;
-   }
+      var controllerTypes = builder.Build();
+      var dict = new Dictionary<RouteKey, RouteValue>();
+      foreach (var controllerType in controllerTypes) {
+         var methods = controllerType.GetMethods(BindingFlags.Instance | BindingFlags.NonPublic)
+            .Where(m => m.IsDefined(typeof(ControllerHandlerAttribute), false));
 
-   public IMiddleware GetMiddleware(Type type) {
-      return _middlewares[type];
+         foreach (var method in methods) {
+            var attr = method.GetCustomAttribute<ControllerHandlerAttribute>()!;
+
+            dict.Add(
+               new RouteKey(attr.Pattern, attr.HttpMethodType),
+               new RouteValue(controllerType, method, attr.Middlewares)
+            );
+         }
+      }
+
+      _routes = dict.ToFrozenDictionary();
+      Error = _routes.FirstOrDefault(x => x.Key.Pattern == "*").Value;
    }
 
    public Option<RouteValue> GetRoute(Request request) {

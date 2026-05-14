@@ -1,0 +1,40 @@
+<Project Sdk="Microsoft.NET.Sdk">
+    <PropertyGroup>
+        <PackageType>Template</PackageType>
+        <Nullable>enable</Nullable>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <PackageId>PupaMVCF.Template</PackageId>
+        <Version>0.1.6</Version>
+        <PackageTags>dotnet-new;template;web;mvс;pupamvcf</PackageTags>
+        <IncludeContentInPack>true</IncludeContentInPack>
+        <IncludeBuildOutput>false</IncludeBuildOutput>
+        <PackageReadmeFile>README.md</PackageReadmeFile>
+        <ContentTargetFolders>content</ContentTargetFolders>
+        <TargetFramework>net10.0</TargetFramework>
+        <PackageLicenseExpression>MIT</PackageLicenseExpression>
+        <Authors>Artpupser</Authors>
+        <Owner>Artpupser</Owner>
+        <OutputType>Exe</OutputType>
+        <Company>Artpupser</Company>
+        <EnableDefaultContentItems>false</EnableDefaultContentItems>
+        <Description>Template for working with PupaMVCF.Framework</Description>
+        <RootNamespace>PupaMVCF.Web.Template</RootNamespace>
+    </PropertyGroup>
+    <ItemGroup>
+        <Content Include="**\*" Exclude="bin\**;obj\**"/>
+        <None Include="README.md" Pack="true" PackagePath="\"/>
+    </ItemGroup>
+    <ItemGroup>
+        <FilesProject Include="$(ProjectDir)/environment/**/*"/>
+    </ItemGroup>
+    <ItemGroup>
+        <PackageReference Include="dotenv.net" Version="4.0.2"/>
+        <PackageReference Include="PupaMVCF.Framework" Version="0.1.6"/>
+    </ItemGroup>
+    <Target Name="BuildEnv" AfterTargets="Build">
+        <Copy SourceFiles="@(FilesProject)" DestinationFolder="$(TargetDir)/%(RecursiveDir)"/>
+    </Target>
+    <Target Name="PublishEnv" AfterTargets="Publish">
+        <Copy SourceFiles="@(FilesProject)" DestinationFolder="$(PublishDir)/%(RecursiveDir)"/>
+    </Target>
+</Project>

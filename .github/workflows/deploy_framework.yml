@@ -1,0 +1,79 @@
+﻿name: Deploy PupaMVCF.Framework nuget pacakge 
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+env:
+  PROJECT_FRAMEWORK_PATH: 'src/PupaMVCF.Framework/PupaMVCF.Framework.csproj'
+  PROJECT_TESTS_PATH: 'src/PupaMVCF.Tests/PupaMVCF.Tests.csproj'
+  NUGET_SOURCE_URI: "https://api.nuget.org/v3/index.json"
+  GITHUB_USERNAME: "Artpupser"
+  OUTPUT_NUPKG_FILE: ${{ github.workspace }}/output/*.nupkg
+  PACKAGE_OUTPUT_DIR: ${{ github.workspace }}/output
+
+permissions:
+  contents: read
+  
+jobs:
+  test:
+    name: "Testing PupaMVCF.Framework"
+    runs-on: "ubuntu-latest"
+    steps:
+      - name: 'Setup packages, checkout@v6 setup-dotnet@v5 actions/cache@v5'
+        uses: actions/checkout@v6
+        uses: actions/setup-dotnet@v5
+        with:
+          dotnet-version: '10.0.x'
+        uses: actions/cache@v5
+        with:
+          path: ~/.nuget/pacakges
+          key: nuget-${{ runner.os }}-${{ hashFiles('**/*.csproj') }}
+
+      - name: "Resotore csharp projects"
+        run: dotnet restore ${{ env.PROJECT_FRAMEWORK_PATH }}
+        run: dotnet restore ${{ env.PROJECT_TESTS_PATH }}
+
+      - name: "Build csharp projects"
+        run: dotnet build ${{ env.PROJECT_FRAMEWORK_PATH }}
+        run: dotnet build ${{ env.PROJECT_TESTS_PATH }}
+
+      - name: "Run xunit test"
+        run: dotnet test ${{ env.PROJECT_TESTS_PATH }} --no-build --configuration Release --verbosity normal --logger "trx;LogFileName=test-report.trx"
+
+      - name: "Upload test report"
+          uses: actions/upload-artifact@v7
+          with:
+            name: test-report
+            path: '**/*.trx'
+  deploy:
+    name: "Deploy PupaMVCF.Framework"
+    runs-on: 'ubuntu-latest'
+    needs: test
+    steps:
+      - name: 'Setup packages, checkout@v6 setup-dotnet@v5'
+        uses: actions/checkout@v6
+        uses: actions/setup-dotnet@v5
+        with:
+          dotnet-version: '10.0.x'
+      
+      - name: "Process compiling package"
+        run: mkdir -p ${{ env.PACKAGE_OUTPUT_DIR }}
+        run: dotnet restore ${{ env.PROJECT_FRAMEWORK_PATH }}
+        run: dotnet build ${{ env.PROJECT_FRAMEWORK_PATH }} --no-restore -c Release
+
+      - name: Extract version
+        run: echo "VERSION=${GITHUB_REF#refs/tags/v}" >> $GITHUB_ENV
+      
+      - name: "Pack pacakge"
+        run: dotnet pack ${{ env.PROJECT_FRAMEWORK_PATH }} --no-restore --no-build -c Release --include-symbols -p:PackageVersion=${{ env.VERSION }}  --output ${{ env.PACKAGE_OUTPUT_DIR }}
+      
+      - name: "Push package NUGET"
+        run: dotnet nuget push --skip-duplicate ${{ env.OUTPUT_NUPKG_FILE }} -k ${{ secrets.NUGET_AUTH_TOKEN }} -s ${{ env.NUGET_SOURCE_URI }}
+      
+      - name: "Add source for github"
+        run: dotnet nuget add source --username ${{ env.GITHUB_USERNAME }} --password ${{ secrets.GIT_AUTH_TOKEN }} --store-password-in-clear-text --name github "https://nuget.pkg.github.com/${{ env.GITHUB_USERNAME }}/index.json"
+      
+      - name: "Push package GITHUB"
+        run: dotnet nuget push --skip-duplicate ${{ env.OUTPUT_NUPKG_FILE }} -k ${{ secrets.GIT_AUTH_TOKEN }} -s "github"

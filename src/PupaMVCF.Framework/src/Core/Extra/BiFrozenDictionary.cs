@@ -66,7 +66,5 @@ public sealed class BiFrozenDictionary<K, V> : IEnumerable<(KeyValuePair<K, V>, 
 
    object IEnumerator.Current => Current;
 
-   public void Dispose() {
-      throw new NotImplementedException();
-   }
+   public void Dispose() { }
 }
