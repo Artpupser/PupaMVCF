@@ -5,47 +5,56 @@ on:
     branches:
       - "main"
       - "dev"
-    pull_requests:
+
+  pull_request:
 
 env:
   PROJECT_FRAMEWORK_PATH: 'src/PupaMVCF.Framework/PupaMVCF.Framework.csproj'
   PROJECT_TESTS_PATH: 'src/PupaMVCF.Tests/PupaMVCF.Tests.csproj'
 
-permissions: 
-  contents: read 
-  
+permissions:
+  contents: read
+
 jobs:
   test:
     name: "Testing PupaMVCF.Framework"
-    runs-on: "ubuntu-latest"
+    runs-on: ubuntu-latest
+
     steps:
       - name: Checkout code
-        uses: actions/checkout@v6
+        uses: actions/checkout@v4
 
       - name: Setup .NET
-        uses: actions/setup-dotnet@v5
+        uses: actions/setup-dotnet@v4
         with:
           dotnet-version: '10.0.x'
-  
+
       - name: Cache NuGet packages
-        uses: actions/cache@v5
+        uses: actions/cache@v4
         with:
-          path: ~/.nuget/packages 
+          path: ~/.nuget/packages
           key: nuget-${{ runner.os }}-${{ hashFiles('**/*.csproj') }}
-      
-      - name: "Resotore csharp projects"
-        run: dotnet restore ${{ env.PROJECT_FRAMEWORK_PATH }}
-        run: dotnet restore ${{ env.PROJECT_TESTS_PATH }}
-  
-      - name: "Build csharp projects"
-        run: dotnet build ${{ env.PROJECT_FRAMEWORK_PATH }}
-        run: dotnet build ${{ env.PROJECT_TESTS_PATH }}
-  
-      - name: "Run xunit test"
-        run: dotnet test ${{ env.PROJECT_TESTS_PATH }} --no-build --configuration Release --verbosity normal --logger "trx;LogFileName=test-report.trx"
-      
-      - name: "Upload test report"
-        uses: actions/upload-artifact@v7
+
+      - name: Restore csharp projects
+        run: |
+          dotnet restore ${{ env.PROJECT_FRAMEWORK_PATH }}
+          dotnet restore ${{ env.PROJECT_TESTS_PATH }}
+
+      - name: Build csharp projects
+        run: |
+          dotnet build ${{ env.PROJECT_FRAMEWORK_PATH }} --configuration Release --no-restore
+          dotnet build ${{ env.PROJECT_TESTS_PATH }} --configuration Release --no-restore
+
+      - name: Run xUnit tests
+        run: |
+          dotnet test ${{ env.PROJECT_TESTS_PATH }} \
+          --no-build \
+          --configuration Release \
+          --verbosity normal \
+          --logger "trx;LogFileName=test-report.trx"
+
+      - name: Upload test report
+        uses: actions/upload-artifact@v4
         with:
           name: test-report
           path: '**/*.trx'
