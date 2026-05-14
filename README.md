@@ -14,6 +14,8 @@
 
 #### [PupaMVCF](https://github.com/Artpupser/PupaMVCF) is a lightweight and flexible web framework using the MVC pattern. 🎯
 
+<img src="https://github.com/Artpupser/PupaMVCF/blob/main/assets/banner.jpg" style="border-radius: 20px; max-height: 500px">
+
 </div>
 
 ---
@@ -107,7 +109,7 @@ dotnet run
 - changed: initialization steps
 - add: database factory, repository
 - add: .env files loading in PupaMVCF.Template
-- add: banner
+- add: banner.jpg
 - changed: Readme.md file design
 - changed: github workflows, optimized, package updated
 
