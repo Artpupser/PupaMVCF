@@ -16,9 +16,9 @@ env:
 
 permissions:
   contents: read
+  packages: write
   
 jobs:
-  test:
   test:
     name: "Testing PupaMVCF.Framework"
     runs-on: ubuntu-latest

@@ -15,6 +15,7 @@ env:
 
 permissions:
   contents: read
+  packages: write
   
 jobs:
   test:
@@ -112,5 +113,5 @@ jobs:
         run: |
           dotnet nuget push "${{ env.PACKAGE_OUTPUT_DIR }}/*.nupkg" \
           --skip-duplicate \
-          -k ${{ secrets.GIT_AUTH_TOKEN }} \
-          -s github
+          --api-key ${{ secrets.GITHUB_TOKEN }} \
+          --source "https://nuget.pkg.github.com/Artpupser/index.json"
