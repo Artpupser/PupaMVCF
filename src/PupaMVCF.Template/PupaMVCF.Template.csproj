@@ -4,7 +4,7 @@
         <Nullable>enable</Nullable>
         <ImplicitUsings>enable</ImplicitUsings>
         <PackageId>PupaMVCF.Template</PackageId>
-        <Version>0.1.6</Version>
+        <Version>0.2.0</Version>
         <PackageTags>dotnet-new;template;web;mvс;pupamvcf</PackageTags>
         <IncludeContentInPack>true</IncludeContentInPack>
         <IncludeBuildOutput>false</IncludeBuildOutput>
@@ -29,7 +29,7 @@
     </ItemGroup>
     <ItemGroup>
         <PackageReference Include="dotenv.net" Version="4.0.2"/>
-        <PackageReference Include="PupaMVCF.Framework" Version="0.1.6"/>
+        <PackageReference Include="PupaMVCF.Framework" Version="0.2.0"/>
     </ItemGroup>
     <Target Name="BuildEnv" AfterTargets="Build">
         <Copy SourceFiles="@(FilesProject)" DestinationFolder="$(TargetDir)/%(RecursiveDir)"/>
