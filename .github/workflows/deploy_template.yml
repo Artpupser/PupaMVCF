@@ -1,4 +1,4 @@
-﻿name: Deploy PupaMVCF.Framework nuget pacakge 
+﻿name: Deploy PupaMVCF.Template nuget pacakge 
 
 on:
   push:
