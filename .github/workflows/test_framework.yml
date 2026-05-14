@@ -45,7 +45,7 @@ jobs:
         run: dotnet test ${{ env.PROJECT_TESTS_PATH }} --no-build --configuration Release --verbosity normal --logger "trx;LogFileName=test-report.trx"
       
       - name: "Upload test report"
-          uses: actions/upload-artifact@v7
-          with:
-            name: test-report
-            path: '**/*.trx'
+        uses: actions/upload-artifact@v7
+        with:
+          name: test-report
+          path: '**/*.trx'
