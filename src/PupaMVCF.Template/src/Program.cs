@@ -32,7 +32,8 @@ public static class Program {
          var routerMapBuilder = new RouterMapBuilder();
          routerMapBuilder.AddController<StaticController>();
          routerMapBuilder.AddController<ErrorControllerOnlyJson>();
-         return new RouterMapBuilder();
+         routerMapBuilder.AddController<TemplateController>();
+         return routerMapBuilder;
       });
       builder.Services.AddSingleton<IRouter, Router>();
       builder.Services.AddHostedService<TemplateApp>();

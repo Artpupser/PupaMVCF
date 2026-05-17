@@ -16,7 +16,8 @@
         <Description>Simplify MVC web framework on csharp</Description>
         <PackageFlatten>false</PackageFlatten>
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-        <Version>0.2.0</Version>
+        <ServerGarbageCollection>true</ServerGarbageCollection>
+        <Version>0.2.1</Version>
     </PropertyGroup>
     <ItemGroup>
         <PackageReference Include="Dapper" Version="2.1.72"/>
