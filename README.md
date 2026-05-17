@@ -99,6 +99,9 @@ dotnet run
 
 ## 🗃️ Devlog
 
+### v0.2.1
+- fix: session commit async conflict, next()
+
 ### v0.2.0
 
 - deleted: protos, ExampleMacroProcess (need base)
