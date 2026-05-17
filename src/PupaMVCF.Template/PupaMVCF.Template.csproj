@@ -4,7 +4,7 @@
         <Nullable>enable</Nullable>
         <ImplicitUsings>enable</ImplicitUsings>
         <PackageId>PupaMVCF.Template</PackageId>
-        <Version>0.2.0</Version>
+        <Version>0.2.1</Version>
         <PackageTags>dotnet-new;template;web;mvс;pupamvcf</PackageTags>
         <IncludeContentInPack>true</IncludeContentInPack>
         <IncludeBuildOutput>false</IncludeBuildOutput>
