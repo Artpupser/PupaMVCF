@@ -10,7 +10,7 @@ public sealed class PagesController(ILogger<PagesController> logger) : Controlle
    [ControllerHandler("/", HttpMethodType.GET, typeof(LoggerMiddleware))]
    private async Task MainPageHandler(Request request, Response response, CancellationToken cancellationToken) {
       var view = new MainPageView();
-      logger.Log(LogLevel.Warning, "Testing controller DI constructor");
+      logger.Log(LogLevel.Warning, request.Session.Id);
       await SendPage(request, response, view, cancellationToken);
    }
 

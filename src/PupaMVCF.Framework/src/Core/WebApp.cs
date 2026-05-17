@@ -70,15 +70,15 @@ public abstract class WebApp : IHostedService, IWebAppContext {
          });
       }).Configure(app => {
          app.UseSession();
-         app.Use(async (context, next) => {
+         app.Use(async (context, _) => {
+            context.Session.SetInt32("_init", 1);
             var request = new Request(context.Request, context.Session);
             var response = new Response(context.Response);
             await _router.Execute(request, response, context.RequestAborted);
-            await context.Session.CommitAsync();
-            await next();
+            
+            await context.Session.CommitAsync(context.RequestAborted);
             await response.SendAsync(context.RequestAborted);
          });
-         
       });
       _host = builder.Build();
       Context = this;
