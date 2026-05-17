@@ -29,7 +29,8 @@
     </ItemGroup>
     <ItemGroup>
         <PackageReference Include="dotenv.net" Version="4.0.2"/>
-        <PackageReference Include="PupaMVCF.Framework" Version="0.2.0"/>
+<!--        <PackageReference Include="PupaMVCF.Framework" Version="0.2.0"/>-->
+        <ProjectReference Include="..\PupaMVCF.Framework\PupaMVCF.Framework.csproj"/>
     </ItemGroup>
     <Target Name="BuildEnv" AfterTargets="Build">
         <Copy SourceFiles="@(FilesProject)" DestinationFolder="$(TargetDir)/%(RecursiveDir)"/>
