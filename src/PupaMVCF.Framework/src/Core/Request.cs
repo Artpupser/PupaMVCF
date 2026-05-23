@@ -17,22 +17,40 @@ public class Request {
    private readonly HttpRequest _request;
    public string Path => _request.Path;
    public string PathBase => _request.PathBase;
-   public string QueryString => _request.QueryString.Value;
+
+   public Option<string> QueryString => _request.QueryString.HasValue
+      ? Option<string>.Ok(_request.QueryString.Value)
+      : Option<string>.Fail();
+
    public string Url => _request.GetEncodedUrl();
    public HttpMethodType HttpMethodType { get; }
    public MimeContentType MimeContentType { get; }
    public IFeatureCollection FeatureCollection { get; }
-   public ISession Session { get; }
-   public IPAddress IpAddress => _request.HttpContext.Connection.RemoteIpAddress;
+
+   public Option<IPAddress> IpAddress => _request.HttpContext.Connection.RemoteIpAddress is not null
+      ? Option<IPAddress>.Ok(_request.HttpContext.Connection.RemoteIpAddress)
+      : Option<IPAddress>.Fail();
+
    public IRequestHeader RequestHeader { get; }
 
-   public Request(HttpRequest request, ISession session) {
+   public Request(HttpRequest request) {
       _request = request;
       MimeContentType = MimeContent.GetMimeType(request.ContentType);
       HttpMethodType = HttpMethodManager.HardGetHttpMethod(request.Method);
       FeatureCollection = request.HttpContext.Features;
       RequestHeader = new HeaderDictionaryProvider(_request.Headers);
-      Session = session;
+   }
+
+   public Option<string> GetBearerToken() {
+      var authHeader = _request.Headers.Authorization.FirstOrDefault();
+      if (string.IsNullOrWhiteSpace(authHeader) ||
+          !authHeader.StartsWith("Bearer ", StringComparison.OrdinalIgnoreCase))
+         return Option<string>.Fail();
+
+      var token = authHeader["Bearer ".Length..].Trim();
+      return string.IsNullOrWhiteSpace(token)
+         ? Option<string>.Fail()
+         : Option<string>.Ok(token);
    }
 
    public Option<string> GetCookie(string key) {

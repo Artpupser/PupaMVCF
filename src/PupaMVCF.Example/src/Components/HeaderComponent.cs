@@ -1,25 +1,23 @@
 using PupaMVCF.Framework.Components;
 using PupaMVCF.Framework.Core;
 
-namespace PupaMVCF.ExampleProcess.Components;
+namespace PupaMVCF.Example.Components;
 
-public sealed class HeaderComponent : Component {
-   private static (string, string)[] _navigation;
+public sealed class HeaderComponent(IComponentParent? parent) : Component(parent) {
+   private static (string, string)[] _navigation = null!;
 
    public static void PreloadHeader(IEnumerable<(string, string)> value) {
       _navigation = [..value];
    }
 
-   public HeaderComponent(IComponentParent? parent) : base(parent) { }
-
    public override Task Html(Request request, Response response, CancellationToken cancellationToken) {
       var sb = Builder;
-      sb.Append("""
-                <nav class='navbar navbar-expand-lg navbar-dark bg-dark sticky-top'>
-                  <div class='container'>
-                      <a class='navbar-brand fw-bold fs-3 d-flex align-items-center' href='#'>
-                          <img src='/api/public/files?name=icon.webp' alt='Библиотека' width='40' height='40' class='me-3 rounded'>
-                """);
+      sb.Append($$"""
+                  <nav class='navbar navbar-expand-lg navbar-dark bg-dark sticky-top'>
+                    <div class='container'>
+                        <a class='navbar-brand fw-bold fs-3 d-flex align-items-center' href='#'>
+                            <img src='{{StaticPrefix}}icon.webp' alt='Библиотека' width='40' height='40' class='me-3 rounded'>
+                  """);
       sb.Append($"<span>{CurrentView.Title}</span></a>");
       sb.Append("""
                 <button class='navbar-toggler' type='button' data-bs-toggle='collapse' data-bs-target='#navbarNav'>

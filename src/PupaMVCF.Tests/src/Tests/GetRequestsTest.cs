@@ -1,19 +1,20 @@
 using System.Net.Http.Json;
 
+using Microsoft.Extensions.Configuration;
+
 using PupaMVCF.Framework.Core;
-using PupaMVCF.Framework.Extensions;
-using PupaMVCF.Framework.Tests.Models;
+using PupaMVCF.Tests.Models;
 
 using Xunit.Abstractions;
 
-namespace PupaMVCF.Framework.Tests.Tests;
+namespace PupaMVCF.Tests.Tests;
 
 [Collection("NeedServerCollectionTest")]
 public sealed class GetRequestsTest(ITestOutputHelper testOutputHelper, TestHostFixture fixture) {
    private async Task<HttpResponseMessage> SendClient() {
-      var ip = fixture.Configuration.GetAny<string>("Ip");
-      var port = fixture.Configuration.GetAny<int>("Port");
-      return await WebApp.Context.Client.GetAsync($"http://{ip}:{port}/test_get");
+      var ip = fixture.Configuration.GetValue<string>("Ip");
+      var port = fixture.Configuration.GetValue<int>("Port");
+      return await WebApp.Context.Client.GetAsync($"http://{ip}:{port}/test/get");
    }
 
    [Fact]

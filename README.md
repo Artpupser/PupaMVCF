@@ -36,26 +36,26 @@
 
 <div align="center">
 
-| 🏆 Feature                | 📝 Description                                                                                                      |
-|---------------------------|---------------------------------------------------------------------------------------------------------------------|
-| 🌐 Cross-platform support | Supports Windows, Linux, and macOS using the modern .NET runtime                                                    |
-| 🚥 Simplify               | Simplifies backend development with built-in routing, dependency injection, validation, sessions, and configuration |
-| 💪 Flexibility            | Easily extensible with middleware, repositories, custom services, microservices support, and modular architecture   |
-| 🧱 MVC architecture       | Structured around the MVC pattern with controllers, models, views, and routing                                      |
-| 📧 gRPC support           | (not supported) Supports high-performance gRPC communication for services and APIs                                  |
-| 🧩 Middleware             | Extensible middleware pipeline for request and response processing                                                  |
-| 🎨 Views system           | Built-in view rendering system for dynamic page generation                                                          |
-| 💉 Dependency Injection   | Integrated dependency injection container for service management                                                    |
-| ⚙️ Configuration system   | Flexible configuration system with environment and application settings                                             |
-| 📊 Logging                | Logging system for application events, debugging, and monitoring                                                    |
-| 📦 Models & Controllers   | Simplified architecture for organizing business logic and request handling                                          |
-| 🧭 Routing                | Attribute and route-based request routing system                                                                    |
-| ✅ Validations             | Built-in request and model validation utilities                                                                     |
-| 🚨 Error handling         | Centralized exception and error handling mechanisms                                                                 |
-| 🔐 Security               | Includes XSS and SQL Injection protection mechanisms                                                                |
-| 🔄 Daemon processing      | Supports long-running background and daemon tasks                                                                   |
-| 🧩 Microservices ready    | Designed for scalable and distributed microservice architectures                                                    |
-| 🚀 Kestrel integration    | Deep integration with Kestrel including cookies, sessions, and pipe-based I/O                                       |
+| 🏆 Feature                | 📝 Description                                                                                                            |
+|---------------------------|---------------------------------------------------------------------------------------------------------------------------|
+| 🌐 Cross-platform support | Supports Windows, Linux, and macOS using the modern .NET runtime                                                          |
+| 🚥 Simplify               | Simplifies backend development with built-in routing, dependency injection, validation, authentication, and configuration |
+| 💪 Flexibility            | Easily extensible with middleware, repositories, custom services, microservices support, and modular architecture         |
+| 🧱 MVC architecture       | Structured around the MVC pattern with controllers, models, views, and routing                                            |
+| 📧 gRPC support           | (not supported) Supports high-performance gRPC communication for services and APIs                                        |
+| 🧩 Middleware             | Extensible middleware pipeline for request and response processing                                                        |
+| 🎨 Views system           | Built-in view rendering system for dynamic page generation                                                                |
+| 💉 Dependency Injection   | Integrated dependency injection container for service management                                                          |
+| ⚙️ Configuration system   | Flexible configuration system with environment and application settings                                                   |
+| 📊 Logging                | Logging system for application events, debugging, and monitoring                                                          |
+| 📦 Models & Controllers   | Simplified architecture for organizing business logic and request handling                                                |
+| 🧭 Routing                | Attribute and route-based request routing system                                                                          |
+| ✅ Validations             | Built-in request and model validation utilities                                                                           |
+| 🚨 Error handling         | Centralized exception and error handling mechanisms                                                                       |
+| 🔐 Security               | Includes XSS and SQL Injection protection mechanisms                                                                      |
+| 🔄 Daemon processing      | Supports long-running background and daemon tasks                                                                         |
+| 🧩 Microservices ready    | Designed for scalable and distributed microservice architectures                                                          |
+| 🚀 Kestrel integration    | Deep integration with Kestrel including cookies, authentication, and pipe-based I/O                                       |
 
 </div>
 
@@ -83,8 +83,8 @@ dotnet run
 ### PupaMVCF.Framework
 
 - [Dapper](https://github.com/DapperLib/Dapper)
+- [Microsoft.AspNetCore.Authentication.JwtBearer](https://github.com/dotnet/aspnetcore)
 - [Microsoft.AspNetCore.Server.Kestrel](https://github.com/dotnet/aspnetcore)
-- [Microsoft.AspNetCore.Session](https://github.com/dotnet/aspnetcore)
 - [Microsoft.Extensions.Caching.Memory](https://github.com/dotnet/runtime)
 - [Microsoft.Extensions.Configuration](https://github.com/dotnet/runtime)
 - [Microsoft.Extensions.Hosting](https://github.com/dotnet/runtime)
@@ -95,11 +95,33 @@ dotnet run
 ### PupaMVCF.Template
 
 - [dotenv.net](https://github.com/bolorundurowb/dotenv.net)
+- [Npgsql](https://www.nuget.org/packages/Npgsql)
 - [PupaMVCF.Framework](https://github.com/Artpupser/PupaMVCF)
 
 ## 🗃️ Devlog
 
+### v0.2.2
+
+- add: PupaMVCF.Template currently initializing database PgSQL
+- add: json validator module
+- add: ServiceCollectionExtensions
+- add: Authentication jwt bearer
+- add: PublicFolder how separate class [VirtualFolder PublicFolder]
+- add: delete functions to database Repository
+- add: ControllerScheme attribute, PrefixPattern for all handlers in controller
+- fix: all yellow wrongs in build
+- fix: ErrorMiddleware add ILogger to constructor
+- fix: Components/Views not used StaticPrefix, currently used in all projects
+- fix: StaticController fix path prefix /api/
+- deleted: configuration extensions
+- deleted: full removed ISession
+- deleted: IValidatorModule -> ValidatorModule
+- changed: validator initialization
+- changed: template structure, PupaMVCF.Template,
+- changed: update initialization scheme
+
 ### v0.2.1
+
 - fix: session commit async conflict, next()
 
 ### v0.2.0

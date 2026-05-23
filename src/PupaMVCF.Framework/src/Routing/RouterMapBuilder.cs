@@ -8,6 +8,17 @@ public sealed class RouterMapBuilder {
       return this;
    }
 
+   public RouterMapBuilder AddController(Type type) {
+      _controllers.Add(type);
+      return this;
+   }
+
+   public RouterMapBuilder AddControllers(Type[] types) {
+      foreach (var type in types) _controllers.Add(type);
+      return this;
+   }
+
+
    public IReadOnlyList<Type>
       Build() {
       return _controllers;

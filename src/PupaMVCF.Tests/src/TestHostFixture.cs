@@ -4,14 +4,15 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 
 using PupaMVCF.Framework.Controllers;
+using PupaMVCF.Framework.Extensions;
 using PupaMVCF.Framework.Middleware;
 using PupaMVCF.Framework.Routing;
-using PupaMVCF.Framework.Tests.Controllers;
-using PupaMVCF.Framework.Tests.Validations.Modules;
 using PupaMVCF.Framework.Validations;
 using PupaMVCF.Framework.Validations.Modules;
+using PupaMVCF.Tests.Controllers;
+using PupaMVCF.Tests.Validations.Modules;
 
-namespace PupaMVCF.Framework.Tests;
+namespace PupaMVCF.Tests;
 
 public sealed class TestHostFixture : IAsyncLifetime {
    public IHost Host { get; private set; } = null!;
@@ -23,23 +24,21 @@ public sealed class TestHostFixture : IAsyncLifetime {
       builder.Services.AddSingleton<IValidatorManager, ModifyValidatorManager>(_ =>
          new ModifyValidatorManager(builder.Configuration,
          [
-            new NeedValidatorModule(), new EmailValidatorModule(), new NumberRangeValidatorModule(),
-            new StringRangeValidatorModule(), new CloudflareCaptchaValidatorModule(), new TestValidatorModule()
+            typeof(NeedValidatorModule),
+            typeof(EmailValidatorModule),
+            typeof(NumberRangeValidatorModule),
+            typeof(StringRangeValidatorModule),
+            typeof(CloudflareCaptchaValidatorModule),
+            typeof(JsonValidatorModule),
+            typeof(TestValidatorModule)
          ]));
-
-      builder.Services.AddScoped<LoggerMiddleware>();
-      builder.Services.AddScoped<ErrorMiddleware>();
-      builder.Services.AddScoped<StaticController>();
-      builder.Services.AddScoped<ErrorControllerOnlyJson>();
-      builder.Services.AddScoped<TestController>();
-
-      builder.Services.AddSingleton<IRouter, Router>(_ => {
-         var routerMapBuilder = new RouterMapBuilder();
-         routerMapBuilder.AddController<StaticController>();
-         routerMapBuilder.AddController<ErrorControllerOnlyJson>();
-         routerMapBuilder.AddController<TestController>();
-         return new Router(routerMapBuilder, builder.Services.BuildServiceProvider());
-      });
+      builder.Services.AddScoped([typeof(LoggerMiddleware)]);
+      builder.Services.AddScoped([typeof(TestController), typeof(ErrorControllerOnlyJson), typeof(StaticController)]);
+      builder.Services.AddSingleton<RouterMapBuilder>(_ =>
+         new RouterMapBuilder().AddControllers([
+            typeof(TestController), typeof(ErrorControllerOnlyJson), typeof(StaticController)
+         ]));
+      builder.Services.AddSingleton<IRouter, Router>();
       builder.Services.AddHostedService<TestApp>();
       Configuration = builder.Configuration;
       Host = builder.Build();

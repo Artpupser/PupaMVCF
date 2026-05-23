@@ -2,15 +2,18 @@ using System.Net;
 using System.Text;
 using System.Text.Encodings.Web;
 
+using Microsoft.Extensions.Configuration;
+
 using PupaMVCF.Framework.Core;
-using PupaMVCF.Framework.Extensions;
 
 namespace PupaMVCF.Framework.Components;
 
 public abstract class Component : IComponentParent {
    protected readonly IComponentParent? _parent;
    protected readonly View _currentView;
-   public static string StaticPrefix => WebApp.Context.Configuration.GetAny<string>("StaticPrefix");
+
+   protected static string StaticPrefix => WebApp.Context?.Configuration?.GetValue<string>("StaticPrefix") ??
+                                           throw new Exception("Undefined StaticPrefix");
 
    protected Component(IComponentParent? parent) {
       _parent = parent;

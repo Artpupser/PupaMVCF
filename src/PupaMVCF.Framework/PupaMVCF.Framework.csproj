@@ -17,12 +17,12 @@
         <PackageFlatten>false</PackageFlatten>
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
         <ServerGarbageCollection>true</ServerGarbageCollection>
-        <Version>0.2.1</Version>
+        <Version>0.2.2</Version>
     </PropertyGroup>
     <ItemGroup>
         <PackageReference Include="Dapper" Version="2.1.72"/>
+        <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="10.0.8"/>
         <PackageReference Include="Microsoft.AspNetCore.Server.Kestrel" Version="2.3.9"/>
-        <PackageReference Include="Microsoft.AspNetCore.Session" Version="2.3.9"/>
         <PackageReference Include="Microsoft.Extensions.Caching.Memory" Version="10.0.5"/>
         <PackageReference Include="Microsoft.Extensions.Configuration" Version="10.0.5"/>
         <PackageReference Include="Microsoft.Extensions.Hosting" Version="10.0.5"/>

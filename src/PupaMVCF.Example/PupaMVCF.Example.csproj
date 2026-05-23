@@ -6,7 +6,7 @@
         <ImplicitUsings>enable</ImplicitUsings>
         <UserSecretsId>dotnet-PupaMVCF.ExampleTest-b94247b3-8079-43a7-8d20-ecfb818247fd</UserSecretsId>
         <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
-        <RootNamespace>PupaMVCF.ExampleProcess</RootNamespace>
+        <RootNamespace>PupaMVCF.Example</RootNamespace>
     </PropertyGroup>
 
     <ItemGroup>
@@ -14,7 +14,7 @@
     </ItemGroup>
     <ItemGroup>
         <ProjectReference Include="..\PupaMVCF.Framework\PupaMVCF.Framework.csproj"/>
-        
+
     </ItemGroup>
     <Target Name="BuildEnv" AfterTargets="Build">
         <Copy SourceFiles="@(FilesProject)" DestinationFolder="$(TargetDir)/%(RecursiveDir)"/>

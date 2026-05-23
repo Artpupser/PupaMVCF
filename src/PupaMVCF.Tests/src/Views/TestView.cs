@@ -1,9 +1,8 @@
 using PupaMVCF.Framework.Components;
 using PupaMVCF.Framework.Core;
-using PupaMVCF.Framework.Tests.Components;
 
 
-namespace PupaMVCF.Framework.Tests.Views;
+namespace PupaMVCF.Tests.Views;
 
 public sealed class TestView : View {
    public override HeadLink[] GetLinks() {

@@ -3,14 +3,17 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
 using PupaMVCF.Framework.Controllers;
+using PupaMVCF.Framework.Core;
+using PupaMVCF.Framework.Database;
+using PupaMVCF.Framework.Extensions;
 using PupaMVCF.Framework.Middleware;
 using PupaMVCF.Framework.Routing;
 using PupaMVCF.Framework.Validations;
 using PupaMVCF.Framework.Validations.Modules;
-using PupaMVCF.Web.Template.Controllers;
-using PupaMVCF.Web.Template.Middleware;
+using PupaMVCF.Template.Controllers;
+using PupaMVCF.Template.Middleware;
 
-namespace PupaMVCF.Web.Template;
+namespace PupaMVCF.Template;
 
 public static class Program {
    private static async Task Main(string[] args) {
@@ -20,21 +23,22 @@ public static class Program {
       builder.Services.AddSingleton<IValidatorManager, ModifyValidatorManager>(_ =>
          new ModifyValidatorManager(builder.Configuration,
          [
-            new NeedValidatorModule(), new EmailValidatorModule(), new NumberRangeValidatorModule(),
-            new StringRangeValidatorModule(), new CloudflareCaptchaValidatorModule()
+            typeof(NeedValidatorModule),
+            typeof(EmailValidatorModule),
+            typeof(NumberRangeValidatorModule),
+            typeof(StringRangeValidatorModule),
+            typeof(CloudflareCaptchaValidatorModule),
+            typeof(JsonValidatorModule)
          ]));
-      builder.Services.AddScoped<TemplateController>();
-      builder.Services.AddScoped<LoggerMiddleware>();
-      builder.Services.AddScoped<TemplateMiddleware>();
-      builder.Services.AddScoped<ErrorControllerOnlyJson>();
-      builder.Services.AddScoped<StaticController>();
-      builder.Services.AddSingleton<RouterMapBuilder>(_ => {
-         var routerMapBuilder = new RouterMapBuilder();
-         routerMapBuilder.AddController<StaticController>();
-         routerMapBuilder.AddController<ErrorControllerOnlyJson>();
-         routerMapBuilder.AddController<TemplateController>();
-         return routerMapBuilder;
-      });
+      builder.Services.AddSingleton<IDatabaseConnectionFactory, DatabaseConnectionFactory<Npgsql.NpgsqlConnection>>();
+      builder.Services.AddSingleton<PublicFolder>();
+      builder.Services.AddSingleton<IWebAppBootstrap, TemplateBootstrap>();
+
+      builder.Services.AddScoped([typeof(LoggerMiddleware), typeof(TemplateMiddleware)]);
+      builder.Services.AddScoped(
+         [typeof(TemplateController), typeof(ErrorControllerOnlyJson), typeof(StaticController)]);
+      builder.Services.AddSingleton<RouterMapBuilder>(_ => new RouterMapBuilder().AddControllers(
+         [typeof(TemplateController), typeof(ErrorControllerOnlyJson), typeof(StaticController)]));
       builder.Services.AddSingleton<IRouter, Router>();
       builder.Services.AddHostedService<TemplateApp>();
       var host = builder.Build();

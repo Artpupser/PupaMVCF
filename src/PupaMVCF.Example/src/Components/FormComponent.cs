@@ -2,21 +2,15 @@ using PupaMVCF.Framework.Components;
 using PupaMVCF.Framework.Core;
 using PupaMVCF.Framework.Extensions;
 
-namespace PupaMVCF.ExampleProcess.Components;
+namespace PupaMVCF.Example.Components;
 
 public readonly record struct FormComponentFiled(string Type, string Name, string Label, bool Require = true);
 
-public class FormComponent : Component {
-   private readonly string _action;
-   private readonly string _id;
+public class FormComponent(IComponentParent? parent, string action, string id) : Component(parent) {
    private readonly List<FormComponentFiled> _fields = [];
-   public string CaptchaSite { get; }
 
-   public FormComponent(IComponentParent? parent, string action, string id) : base(parent) {
-      _action = action;
-      _id = id;
-      CaptchaSite = WebApp.Context.Configuration.GetAny<string>("CaptchaSecureSite");
-   }
+   public string CaptchaSite { get; } = WebApp.Context.Configuration.GetValue<string>("CaptchaSecureSite") ??
+                                        throw new Exception("Undefined CaptchaSecureSite.");
 
    public void Push(string type, string name, string label, bool require = true) {
       _fields.Add(new FormComponentFiled(type, name, label, require));
@@ -24,7 +18,7 @@ public class FormComponent : Component {
 
    public override Task Html(Request request, Response response, CancellationToken cancellationToken) {
       var sb = Builder;
-      sb.Append($"<form  method='POST' action='{_action}' id='{_id}'>");
+      sb.Append($"<form  method='POST' action='{action}' id='{id}'>");
       foreach (var field in _fields) {
          if (field.Type == "captcha") {
             sb.Append($"""

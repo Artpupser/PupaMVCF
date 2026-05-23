@@ -18,12 +18,11 @@
   },
   "preferNameDirectory": true,
   "symbols": {
-    "FrameworkVersion": {
+    "PUPA_FRAMEWORK_VERSION": {
       "type": "parameter",
       "datatype": "string",
-      "defaultValue": "0.1.*",
-      "replaces": "FrameworkVersion",
-      "description": "Version of PupaMVCF.Framework"
+      "defaultValue": "0.2.2",
+      "replaces": "FrameworkVersion"
     }
   }
 }

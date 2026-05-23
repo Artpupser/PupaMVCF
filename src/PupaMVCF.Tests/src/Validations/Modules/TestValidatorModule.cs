@@ -1,13 +1,11 @@
-﻿using Microsoft.Extensions.Logging;
-
-using PupaMVCF.Framework.Core;
-using PupaMVCF.Framework.Tests.Models;
+﻿using PupaMVCF.Framework.Core;
 using PupaMVCF.Framework.Validations;
+using PupaMVCF.Tests.Models;
 
-namespace PupaMVCF.Framework.Tests.Validations.Modules;
+namespace PupaMVCF.Tests.Validations.Modules;
 
-public sealed class TestValidatorModule : IValidatorModule {
-   public async Task<bool> Valid(object? instance, string options, Request request, Response response,
+public sealed class TestValidatorModule(IValidatorManager validatorManager) : ValidatorModule(validatorManager) {
+   public override async Task<bool> Valid(object? instance, string options, Request request, Response response,
       CancellationToken cancellationToken) {
       if (instance is not TestModelItem[] models) {
          response.PushError("Object is not TestModelItem[]");
@@ -21,7 +19,7 @@ public sealed class TestValidatorModule : IValidatorModule {
 
       foreach (var model in models) {
          var result =
-            await WebApp.Context.Validator.Valid<TestModelItem>(model, request, response, cancellationToken);
+            await ValidatorManager.Valid(model, request, response, cancellationToken);
          if (!result)
             return false;
       }
@@ -29,6 +27,6 @@ public sealed class TestValidatorModule : IValidatorModule {
       return true;
    }
 
-   public string RuleId => "test_items";
-   public string Message => "TestModel not correct";
+   public override string RuleId => "test_items";
+   public override string Message => "TestModel not correct";
 }

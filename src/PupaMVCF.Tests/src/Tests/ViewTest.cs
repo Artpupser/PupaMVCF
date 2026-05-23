@@ -1,24 +1,23 @@
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Http.Features;
-using Microsoft.AspNetCore.Http.Internal;
 
 using PupaMVCF.Framework.Core;
-using PupaMVCF.Framework.Tests.Components;
-using PupaMVCF.Framework.Tests.Views;
+using PupaMVCF.Tests.Components;
+using PupaMVCF.Tests.Views;
 
 using Xunit.Abstractions;
 
-namespace PupaMVCF.Framework.Tests.Tests;
+namespace PupaMVCF.Tests.Tests;
 
 [Collection("ComponentsTest")]
-public sealed class ViewsTest(ITestOutputHelper testOutputHelper) {
+public sealed class ViewsTest {
    private (Request, Response, CancellationToken) ImitationServerWork() {
-      var sessionFeature = new DefaultSessionFeature();
-      var httpRequest = new DefaultHttpRequest(new DefaultHttpContext()) {
-         Method = "POST"
+      var httpContext = new DefaultHttpContext {
+         Request = {
+            Method = "GET"
+         }
       };
-      var request = new Request(httpRequest, sessionFeature.Session);
-      var response = new Response(new DefaultHttpResponse(new DefaultHttpContext()));
+      var request = new Request(httpContext.Request);
+      var response = new Response(httpContext.Response);
       var cts = new CancellationTokenSource();
       return (request, response, cts.Token);
    }
@@ -32,9 +31,10 @@ public sealed class ViewsTest(ITestOutputHelper testOutputHelper) {
 
    [Fact]
    public async Task ViewCreate_WithHtmlInvoke_ReturnsOk() {
+      await Task.Delay(TimeSpan.FromSeconds(1));
       var (request, response, cancellationToken) = ImitationServerWork();
       var view = new TestView();
-      view.Html(request, response, cancellationToken);
+      await view.Html(request, response, cancellationToken);
       Assert.True(view.Builder.Length > 8);
    }
 
@@ -43,7 +43,7 @@ public sealed class ViewsTest(ITestOutputHelper testOutputHelper) {
       var (request, response, cancellationToken) = ImitationServerWork();
       var view = new TestView();
       var component = new TestComponent(view);
-      component.Html(request, response, cancellationToken);
+      await component.Html(request, response, cancellationToken);
       Assert.True(component.Builder.Length > 0);
       Assert.Equal("<h1>Test</h1>", component.Builder.ToString());
    }

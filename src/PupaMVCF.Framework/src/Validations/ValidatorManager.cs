@@ -11,13 +11,14 @@ using PupaMVCF.Framework.Core;
 namespace PupaMVCF.Framework.Validations;
 
 public sealed class ModifyValidatorManager : IValidatorManager {
-   public readonly IReadOnlyDictionary<string, IValidatorModule> _modules;
+   public readonly IReadOnlyDictionary<string, ValidatorModule> Modules;
    private readonly ConcurrentDictionary<Type, PropertyValidInfo[]> _cachedProperties;
    private IConfiguration Configuration { get; }
 
-   public ModifyValidatorManager(IConfiguration configuration, IEnumerable<IValidatorModule> modules) {
+   public ModifyValidatorManager(IConfiguration configuration, IEnumerable<Type> modulesTypes) {
       _cachedProperties = new ConcurrentDictionary<Type, PropertyValidInfo[]>();
-      _modules = modules.ToDictionary(module => module.RuleId);
+      Modules = modulesTypes.Select(x => (ValidatorModule)Activator.CreateInstance(x, [this])!)
+         .ToDictionary(module => module.RuleId);
       Configuration = configuration;
    }
 
@@ -74,7 +75,7 @@ public sealed class ModifyValidatorManager : IValidatorManager {
       foreach (var prop in GetPropertiesValidInfoFromType(instance.GetType()))
          for (var i = 0; i < prop.ArrayOptions.Length; i++) {
             var rule = prop.ArrayRules[i];
-            var module = _modules[rule];
+            var module = Modules[rule];
             var result = await module.Valid(prop.Getter(instance), prop.ArrayOptions[i], request, response,
                cancellationToken);
             if (result) continue;

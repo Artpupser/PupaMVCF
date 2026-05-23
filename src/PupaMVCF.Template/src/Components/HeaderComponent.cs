@@ -1,17 +1,17 @@
 using PupaMVCF.Framework.Components;
 using PupaMVCF.Framework.Core;
 
-namespace PupaMVCF.Web.Template.Components;
+namespace PupaMVCF.Template.Components;
 
 public sealed class HeaderComponent(IComponentParent? parent) : Component(parent) {
    public override Task Html(Request request, Response response, CancellationToken cancellationToken) {
       var sb = Builder;
-      sb.Append("""
-                <nav class='navbar navbar-expand-lg navbar-dark bg-dark sticky-top'>
-                  <div class='container'>
-                      <a class='navbar-brand fw-bold fs-3 d-flex align-items-center' href='#'>
-                          <img src='/api/public/files?name=icon.webp' alt='icon' width='40' height='40' class='me-3 rounded'>
-                """);
+      sb.Append($$"""
+                  <nav class='navbar navbar-expand-lg navbar-dark bg-dark sticky-top'>
+                    <div class='container'>
+                        <a class='navbar-brand fw-bold fs-3 d-flex align-items-center' href='#'>
+                            <img src='{{StaticPrefix}}icon.webp' alt='icon' width='40' height='40' class='me-3 rounded'>
+                  """);
       sb.Append($"<span>{CurrentView.Title}</span></a>");
       sb.Append("""
                 <button class='navbar-toggler' type='button' data-bs-toggle='collapse' data-bs-target='#navbarNav'>

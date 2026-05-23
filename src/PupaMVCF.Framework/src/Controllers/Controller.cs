@@ -10,7 +10,7 @@ public abstract class Controller {
 
    public IReadOnlyList<(ControllerHandlerDelegate Func, ControllerHandlerAttribute Attribute)> _handlers;
 
-   public Controller() {
+   protected Controller() {
       _handlers = GetType()
          .GetMethods(BindingFlags.Instance)
          .Where(x => x.IsDefined(typeof(ControllerHandlerAttribute), false))

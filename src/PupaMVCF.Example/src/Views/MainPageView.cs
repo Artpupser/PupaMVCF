@@ -1,9 +1,8 @@
-using PupaMVCF.ExampleProcess.Components;
+using PupaMVCF.Example.Components;
 using PupaMVCF.Framework.Core;
 using PupaMVCF.Framework.Components;
-using PupaMVCF.Framework.Extensions;
 
-namespace PupaMVCF.ExampleProcess.Views;
+namespace PupaMVCF.Example.Views;
 
 public sealed class MainPageView : View {
    public override HeadLink[] GetLinks() {

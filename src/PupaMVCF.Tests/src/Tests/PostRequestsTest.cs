@@ -1,20 +1,22 @@
 using System.Net;
 using System.Net.Http.Json;
 
+using Microsoft.Extensions.Configuration;
+
 using PupaMVCF.Framework.Core;
 using PupaMVCF.Framework.Extensions;
-using PupaMVCF.Framework.Tests.Models;
+using PupaMVCF.Tests.Models;
 
 using Xunit.Abstractions;
 
-namespace PupaMVCF.Framework.Tests.Tests;
+namespace PupaMVCF.Tests.Tests;
 
 [Collection("NeedServerCollectionTest")]
 public sealed class PostRequestsTest(ITestOutputHelper testOutputHelper, TestHostFixture fixture) {
    private async Task<HttpResponseMessage> SendClient<T>(T model) {
-      var ip = fixture.Configuration.GetAny<string>("Ip");
-      var port = fixture.Configuration.GetAny<int>("Port");
-      return await WebApp.Context.Client.PostAsJsonAsync($"http://{ip}:{port}/test_post", model);
+      var ip = fixture.Configuration.GetValue<string>("Ip");
+      var port = fixture.Configuration.GetValue<int>("Port");
+      return await WebApp.Context.Client.PostAsJsonAsync($"http://{ip}:{port}/test/post", model);
    }
 
    [Fact]
@@ -131,9 +133,14 @@ public sealed class PostRequestsTest(ITestOutputHelper testOutputHelper, TestHos
 
       var response = await SendClient(model);
       var content = await response.Content.ReadFromJsonAsync<string[]>();
-      foreach (var item in content) testOutputHelper.WriteLine(item);
+      if (content != null) {
+         foreach (var item in content) testOutputHelper.WriteLine(item);
 
-      Assert.NotEqual((HttpStatusCode)200, response.StatusCode);
-      Assert.Equal(2, content.Length);
+         Assert.NotEqual((HttpStatusCode)200, response.StatusCode);
+         Assert.Equal(2, content.Length);
+         return;
+      }
+
+      Assert.Fail("Content is null");
    }
 }

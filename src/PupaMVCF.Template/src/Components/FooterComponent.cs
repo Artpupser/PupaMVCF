@@ -1,7 +1,7 @@
 using PupaMVCF.Framework.Components;
 using PupaMVCF.Framework.Core;
 
-namespace PupaMVCF.Web.Template.Components;
+namespace PupaMVCF.Template.Components;
 
 public sealed class FooterComponent(IComponentParent? parent) : Component(parent) {
    public override Task Html(Request request, Response response, CancellationToken cancellationToken) {
@@ -11,7 +11,7 @@ public sealed class FooterComponent(IComponentParent? parent) : Component(parent
                    <div class='container'>
                        <div class='row align-items-center'>
                            <div class='col-md-3 text-center text-md-start mb-3 mb-md-0'>
-                               <img src='/api/public/files?name=icon.webp' alt='Логотип' class='img-fluid' style='max-height: 64px;'>
+                               <img src='{StaticPrefix}icon.webp' alt='Логотип' class='img-fluid' style='max-height: 64px;'>
                            </div>
                            <div class='col-md-9 text-center text-md-end'>
                                <h5 class='fw-bold mb-2'>{CurrentView.Title}</h5>

@@ -1,13 +1,15 @@
-using PupaMVCF.ExampleProcess.Components;
-using PupaMVCF.ExampleProcess.Controllers;
+using PupaMVCF.Example.Components;
+using PupaMVCF.Example.Controllers;
 using PupaMVCF.Framework.Controllers;
+using PupaMVCF.Framework.Core;
+using PupaMVCF.Framework.Extensions;
 using PupaMVCF.Framework.Middleware;
 using PupaMVCF.Framework.Routing;
 using PupaMVCF.Framework.Validations;
 using PupaMVCF.Framework.Validations.Modules;
 
 
-namespace PupaMVCF.ExampleProcess;
+namespace PupaMVCF.Example;
 
 public static class Program {
    private static async Task Main(string[] args) {
@@ -15,22 +17,21 @@ public static class Program {
       builder.Services.AddSingleton<IValidatorManager, ModifyValidatorManager>(_ =>
          new ModifyValidatorManager(builder.Configuration,
          [
-            new NeedValidatorModule(), new EmailValidatorModule(), new NumberRangeValidatorModule(),
-            new StringRangeValidatorModule(), new CloudflareCaptchaValidatorModule()
+            typeof(NeedValidatorModule),
+            typeof(EmailValidatorModule),
+            typeof(NumberRangeValidatorModule),
+            typeof(StringRangeValidatorModule),
+            typeof(CloudflareCaptchaValidatorModule),
+            typeof(JsonValidatorModule)
          ]));
-      builder.Services.AddScoped<StaticController>();
-      builder.Services.AddScoped<ErrorControllerOnlyJson>();
-      builder.Services.AddScoped<PagesController>();
-      builder.Services.AddScoped<FruitsController>();
-      builder.Services.AddScoped<LoggerMiddleware>();
-      builder.Services.AddSingleton<RouterMapBuilder>(_ => {
-         var routerMapBuilder = new RouterMapBuilder();
-         routerMapBuilder.AddController<StaticController>();
-         routerMapBuilder.AddController<ErrorControllerOnlyJson>();
-         routerMapBuilder.AddController<PagesController>();
-         routerMapBuilder.AddController<FruitsController>();
-         return routerMapBuilder;
-      });
+      builder.Services.AddSingleton<PublicFolder>();
+      builder.Services.AddScoped([typeof(LoggerMiddleware)]);
+      builder.Services.AddScoped([
+         typeof(FruitsController), typeof(PagesController), typeof(ErrorControllerOnlyJson), typeof(StaticController)
+      ]);
+      builder.Services.AddSingleton<RouterMapBuilder>(_ => new RouterMapBuilder().AddControllers([
+         typeof(FruitsController), typeof(PagesController), typeof(ErrorControllerOnlyJson), typeof(StaticController)
+      ]));
       builder.Services.AddSingleton<IRouter, Router>();
       builder.Services.AddHostedService<ExampleApp>();
       HeaderComponent.PreloadHeader([("Главная", "/"), ("О нас", "/aboutus")]);

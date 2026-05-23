@@ -1,12 +1,13 @@
 using PupaMVCF.Framework.Components;
-using PupaMVCF.Web.Template.Views;
 using PupaMVCF.Framework.Controllers;
 using PupaMVCF.Framework.Core;
 using PupaMVCF.Framework.Middleware;
-using PupaMVCF.Web.Template.Middleware;
+using PupaMVCF.Template.Middleware;
+using PupaMVCF.Template.Views;
 
-namespace PupaMVCF.Web.Template.Controllers;
+namespace PupaMVCF.Template.Controllers;
 
+[ControllerScheme("")]
 public sealed class TemplateController : Controller {
    [ControllerHandler("/", HttpMethodType.GET, typeof(LoggerMiddleware), typeof(TemplateMiddleware))]
    private async Task MainPageHandler(Request request, Response response, CancellationToken cancellationToken) {

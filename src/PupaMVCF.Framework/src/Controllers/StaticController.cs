@@ -2,19 +2,25 @@ using PupaMVCF.Framework.Core;
 
 namespace PupaMVCF.Framework.Controllers;
 
-public sealed class StaticController : Controller {
-   private static readonly char[] InvalidPathChars = ['\\', '/', '.', '\0', ':', '*', '?', '"', '<', '>', '|'];
+[ControllerScheme("/public")]
+public sealed class StaticController(PublicFolder publicFolder) : Controller {
+   private static readonly char[] InvalidChars = ['\\', '/', '\0', ':', '*', '?', '"', '<', '>', '|'];
 
-   [ControllerHandler("/api/public/files", HttpMethodType.GET)]
+   [ControllerHandler("/files", HttpMethodType.GET)]
    private async Task GetPublicFileHandler(Request request, Response response, CancellationToken cancellationToken) {
       if (!request.GetQuery("name").Out(out var name)) {
          response.PushError("Path not valid", 400);
          return;
       }
 
+      if (InvalidChars.Any(symbol => name.Any(x => x == symbol))) {
+         response.PushError("Invalid symbol in path", 400);
+         return;
+      }
+
       cancellationToken.ThrowIfCancellationRequested();
 
-      var file = WebApp.Context.PublicFolder.GetFileIn(name);
+      var file = publicFolder.Virtual.GetFileIn(name);
 
       if (file is null) {
          response.PushError("File not found", 404);

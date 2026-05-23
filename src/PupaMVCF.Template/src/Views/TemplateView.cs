@@ -1,8 +1,8 @@
 using PupaMVCF.Framework.Components;
 using PupaMVCF.Framework.Core;
-using PupaMVCF.Web.Template.Components;
+using PupaMVCF.Template.Components;
 
-namespace PupaMVCF.Web.Template.Views;
+namespace PupaMVCF.Template.Views;
 
 public class TemplateView : View {
    public override HeadLink[] GetLinks() {

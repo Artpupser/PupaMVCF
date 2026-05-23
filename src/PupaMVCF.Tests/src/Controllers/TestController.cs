@@ -1,31 +1,35 @@
+using System.Globalization;
+
 using Microsoft.Extensions.Logging;
 
 using PupaMVCF.Framework.Controllers;
 using PupaMVCF.Framework.Core;
 using PupaMVCF.Framework.Middleware;
-using PupaMVCF.Framework.Tests.Models;
+using PupaMVCF.Framework.Validations;
+using PupaMVCF.Tests.Models;
 
-namespace PupaMVCF.Framework.Tests.Controllers;
+namespace PupaMVCF.Tests.Controllers;
 
-public sealed class TestController : Controller {
-   [ControllerHandler("/test_post", HttpMethodType.POST, typeof(LoggerMiddleware))]
+[ControllerScheme("/test")]
+public sealed class TestController(IValidatorManager validatorManager, ILogger<TestController> logger) : Controller {
+   [ControllerHandler("/post", HttpMethodType.POST, typeof(LoggerMiddleware))]
    private async Task TestPostHandler(Request request, Response response, CancellationToken cancellationToken) {
       var optionValid =
-         await WebApp.Context.Validator.ValidFromRequest<TestModel>(request, response, cancellationToken);
+         await validatorManager.ValidFromRequest<TestModel>(request, response, cancellationToken);
       if (optionValid.Out(out var model)) {
-         WebApp.Context.Logger.LogInformation(model.Id);
+         logger.LogInformation(model.Id);
          foreach (var modelItem in model.Items) {
-            WebApp.Context.Logger.LogInformation(modelItem.Name);
-            WebApp.Context.Logger.LogInformation(modelItem.Age.ToString());
-            WebApp.Context.Logger.LogInformation(modelItem.Email);
+            logger.LogInformation(modelItem.Name);
+            logger.LogInformation(modelItem.Age.ToString(CultureInfo.CurrentCulture));
+            logger.LogInformation(modelItem.Email);
          }
       }
 
       response.WriteStrToCache(string.Empty);
    }
 
-   [ControllerHandler("/test_get", HttpMethodType.GET, typeof(LoggerMiddleware))]
-   private async Task TestGetHandler(Request request, Response response, CancellationToken cancellationToken) {
+   [ControllerHandler("/get", HttpMethodType.GET, typeof(LoggerMiddleware))]
+   private Task TestGetHandler(Request request, Response response, CancellationToken cancellationToken) {
       var testModel = new TestModel {
          Id = "Hello man",
          Items = [
@@ -37,5 +41,6 @@ public sealed class TestController : Controller {
          ]
       };
       response.WriteTJsonToCache(testModel);
+      return Task.CompletedTask;
    }
 }

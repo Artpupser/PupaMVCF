@@ -1,4 +1,4 @@
-namespace PupaMVCF.Framework.Tests;
+namespace PupaMVCF.Tests;
 
 [CollectionDefinition("NeedServerCollectionTest")]
-public sealed class TestCollection : ICollectionFixture<TestHostFixture> { }
+public sealed class TestCollection : ICollectionFixture<TestHostFixture>;

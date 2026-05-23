@@ -1,7 +1,9 @@
 using System.Net;
+using System.Security.Cryptography;
 using System.Text.Encodings.Web;
 using System.Text.Json;
 
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -9,24 +11,20 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-
-using PupaLib.FileIO;
+using Microsoft.IdentityModel.Tokens;
 
 using PupaMVCF.Framework.Extensions;
 using PupaMVCF.Framework.Routing;
-using PupaMVCF.Framework.Validations;
 
 namespace PupaMVCF.Framework.Core;
 
 public abstract class WebApp : IHostedService, IWebAppContext {
    public static IWebAppContext Context { get; private set; } = null!;
    private readonly IRouter _router;
-   private readonly IWebHost _host;
-
-   public VirtualFolder PublicFolder { get; }
+   private readonly WebApplication _host;
+   private readonly ILogger<WebApp> _logger;
+   private readonly IWebAppBootstrap? _bootstrap;
    public IConfiguration Configuration { get; }
-   public ILogger<WebApp> Logger { get; }
-   public IValidatorManager Validator { get; }
    public HttpClient Client { get; }
 
 
@@ -36,70 +34,88 @@ public abstract class WebApp : IHostedService, IWebAppContext {
       WriteIndented = false
    };
 
-
-   protected WebApp(IConfiguration configuration, IRouter router,
-      IValidatorManager validatorManager, ILogger<WebApp> logger) {
+   protected WebApp(IConfiguration configuration, IRouter router, ILogger<WebApp> logger,
+      IWebAppBootstrap? bootstrap = null!) {
       if (Context != null)
          throw new InvalidOperationException("App provider has already been configured");
-      Logger = logger;
-      Validator = validatorManager;
       Configuration = configuration;
-      PublicFolder = VirtualIo.RootFolder.GetFolderIn("public") ??
-                     throw new DirectoryNotFoundException("Public folder not founded");
+      _logger = logger;
+      _bootstrap = bootstrap;
       _router = router;
       Client = new HttpClient {
-         Timeout = configuration.GetTimeSpan("TimeoutClient")
+         Timeout = configuration.GetValue<TimeSpan>("TimeoutClient")
       };
-      var builder = new WebHostBuilder().UseKestrel(options => {
+      Dapper.DefaultTypeMap.MatchNamesWithUnderscores = true;
+      var builder = WebApplication.CreateBuilder();
+
+      builder.WebHost.UseKestrel(options => {
          options.Configure(configuration.GetSection("Kestrel"));
-         options.Listen(IPAddress.Parse(Configuration.GetAny<string>("Ip")), Configuration.GetAny<int>("Port"),
+         options.Listen(IPAddress.Parse(Configuration.GetValue<string>("Ip") ?? throw new Exception("Undefined Ip.")),
+            Configuration.GetValue<int>("Port"),
             listenOptions => {
-               if (Configuration.GetAny<bool>("HttpsEnable")) listenOptions.UseHttps();
+               if (Configuration.GetValue<bool>("HttpsEnable"))
+                  listenOptions.UseHttps();
             });
-      }).ConfigureServices((_, services) => {
-         services.AddDistributedMemoryCache();
-         services.AddSession(options => {
-            var sessionConfigurationSection = configuration.GetSection("Session");
-            var expireTimeSpan = sessionConfigurationSection.GetTimeSpan("Expire");
-            options.IdleTimeout = expireTimeSpan;
-            options.Cookie.MaxAge = expireTimeSpan;
-            options.Cookie.Name = sessionConfigurationSection["Name"];
-            options.Cookie.HttpOnly = !Configuration.GetAny<bool>("HttpsEnable");
-            options.Cookie.IsEssential = true;
-            options.Cookie.SameSite = (SameSiteMode)sessionConfigurationSection.GetAny<byte>("SameSite");
+      });
+
+      builder.Services.AddDistributedMemoryCache();
+      builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+         .AddJwtBearer(options => {
+            options.TokenValidationParameters = new TokenValidationParameters {
+               ValidateIssuerSigningKey = true,
+               IssuerSigningKey = new SymmetricSecurityKey(RandomNumberGenerator.GetBytes(32)),
+               ValidateIssuer = false,
+               ValidateAudience = false,
+               ClockSkew = TimeSpan.Zero
+            };
          });
-      }).Configure(app => {
-         app.UseSession();
-         app.Use(async (context, _) => {
-            context.Session.SetInt32("_init", 1);
-            var request = new Request(context.Request, context.Session);
+
+      _host = builder.Build();
+      _host.UseAuthentication();
+      _host.Use(async (HttpContext context, RequestDelegate _) => {
+         try {
+            var request = new Request(context.Request);
             var response = new Response(context.Response);
             await _router.Execute(request, response, context.RequestAborted);
-            
-            await context.Session.CommitAsync(context.RequestAborted);
             await response.SendAsync(context.RequestAborted);
-         });
+         } catch (Exception ex) {
+            context.Response.StatusCode = 500;
+            await context.Response.WriteAsync(ex.ToString(), context.RequestAborted);
+         }
       });
-      _host = builder.Build();
+
       Context = this;
    }
 
    public async Task StartAsync(CancellationToken cancellationToken) {
-      Logger.LogInformation(
-         "WebApp [Kestrel] server starting on http://{Ip}:{Port}/",
-         Configuration.GetAny<string>("Ip"),
-         Configuration.GetAny<int>("Port"));
+      _logger.LogInformation(_router.ToString());
+      _logger.LogInformation(
+         "🍊 PupaMVCF [Kestrel] server starting on http://{Ip}:{Port}/",
+         Configuration.GetValue<string>("Ip"),
+         Configuration.GetValue<int>("Port"));
+      if (_bootstrap is not null) {
+         _logger.LogInformation($"<< BOOTSTRAP LOADER >>");
+         var operations = _bootstrap.Operations();
+         for (var i = 0; i < operations.Count; i++) {
+            _logger.LogInformation("⚡ Execute operation number [{I}]", i + 1);
+            var op = operations.Dequeue();
+            await op();
+         }
+
+         _logger.LogInformation("🏁 Complete bootstrap loader");
+      }
+
       await _host.StartAsync(cancellationToken);
    }
 
    public async Task StopAsync(CancellationToken cancellationToken) {
-      Logger.LogInformation("WebApp [Kestrel] server stopping...");
+      _logger.LogInformation("🍊 PupaMVCF [Kestrel] server stopping...");
       await _host.StopAsync(cancellationToken);
    }
 
-   public void Dispose() {
+   public async Task Dispose() {
       Client?.Dispose();
-      _host?.Dispose();
+      await _host.DisposeAsync();
       Context = null!;
    }
 }

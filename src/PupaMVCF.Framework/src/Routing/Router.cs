@@ -1,3 +1,5 @@
+using System.Text;
+
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
@@ -8,10 +10,13 @@ using PupaMVCF.Framework.Middleware;
 
 namespace PupaMVCF.Framework.Routing;
 
-public sealed class Router(RouterMapBuilder mapBuilder, IServiceProvider serviceProvider)
+public sealed class Router(RouterMapBuilder mapBuilder, IServiceProvider serviceProvider, ILogger<Router> logger)
    : IRouter {
    private readonly RouterMap _map = new(mapBuilder);
 
+   public override string ToString() {
+      return $"<< ROUTER >>\n{_map}";
+   }
 
    private async Task InvokeErrorRoute(Request request, Response response, CancellationToken cancellationToken) {
       if (_map.Error != null) {
@@ -66,7 +71,7 @@ public sealed class Router(RouterMapBuilder mapBuilder, IServiceProvider service
          response.PushError("Route not found", 404);
          await InvokeErrorRoute(request, response, cancellationToken);
       } catch (Exception e) {
-         WebApp.Context.Logger.LogError("Error {e}", e);
+         logger.LogError("Error {e}", e);
          throw;
       }
    }

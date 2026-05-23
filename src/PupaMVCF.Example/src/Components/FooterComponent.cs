@@ -1,11 +1,9 @@
 using PupaMVCF.Framework.Components;
 using PupaMVCF.Framework.Core;
 
-namespace PupaMVCF.ExampleProcess.Components;
+namespace PupaMVCF.Example.Components;
 
-public sealed class FooterComponent : Component {
-   public FooterComponent(IComponentParent? parent) : base(parent) { }
-
+public sealed class FooterComponent(IComponentParent? parent) : Component(parent) {
    public override Task Html(Request request, Response response, CancellationToken cancellationToken) {
       var sb = Builder;
       sb.Append($$"""

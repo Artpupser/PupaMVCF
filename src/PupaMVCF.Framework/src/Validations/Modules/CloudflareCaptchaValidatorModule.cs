@@ -1,18 +1,21 @@
 using System.Text.Json;
 
+using Microsoft.Extensions.Configuration;
+
 using PupaMVCF.Framework.Core;
 using PupaMVCF.Framework.Extensions;
 using PupaMVCF.Framework.Models;
 
 namespace PupaMVCF.Framework.Validations.Modules;
 
-public sealed class CloudflareCaptchaValidatorModule : IValidatorModule {
+public sealed class CloudflareCaptchaValidatorModule(IValidatorManager validatorManager)
+   : ValidatorModule(validatorManager) {
    private const string CLOUDFLARE_TURNSTILE = "https://challenges.cloudflare.com/turnstile/v0/siteverify";
-   public string RuleId => "cloudflare_captcha";
-   public string Message => "Captcha not valid";
-   public static string Secret => WebApp.Context.Configuration.GetAny<string>("CaptchaSecureKey");
+   public override string RuleId => "cloudflare_captcha";
+   public override string Message => "Captcha not valid";
+   public static string Secret => WebApp.Context.Configuration.GetValue<string>("CaptchaSecureKey") ?? string.Empty;
 
-   public async Task<bool> Valid(object? instance, string options, Request request, Response response,
+   public override async Task<bool> Valid(object? instance, string options, Request request, Response response,
       CancellationToken cancellationToken) {
       if (instance is not string value) return false;
       using var content = new FormUrlEncodedContent(new Dictionary<string, string> {

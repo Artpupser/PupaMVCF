@@ -7,7 +7,7 @@
 
         <IsPackable>false</IsPackable>
         <IsTestProject>true</IsTestProject>
-        <RootNamespace>PupaMVCF.Framework.Tests</RootNamespace>
+        <RootNamespace>PupaMVCF.Tests</RootNamespace>
     </PropertyGroup>
     <ItemGroup>
         <PackageReference Include="coverlet.collector" Version="6.0.4">

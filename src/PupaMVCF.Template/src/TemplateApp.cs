@@ -3,14 +3,12 @@ using Microsoft.Extensions.Logging;
 
 using PupaMVCF.Framework.Core;
 using PupaMVCF.Framework.Routing;
-using PupaMVCF.Framework.Validations;
 
-namespace PupaMVCF.Web.Template;
+namespace PupaMVCF.Template;
 
 public sealed class TemplateApp(
    IConfiguration configuration,
-   IValidatorManager validator,
    IRouter router,
    ILogger<TemplateApp> logger)
-   : WebApp(configuration, router, validator,
+   : WebApp(configuration, router,
       logger);
