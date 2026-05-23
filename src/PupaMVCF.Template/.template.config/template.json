@@ -16,6 +16,12 @@
     "language": "C#",
     "type": "project"
   },
+  "sources": [
+    {
+      "source": "./src",
+      "target": "./"
+    }
+  ],
   "preferNameDirectory": true,
   "symbols": {
     "PUPA_FRAMEWORK_VERSION": {

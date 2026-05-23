@@ -89,7 +89,10 @@ jobs:
           --include-symbols \
           -p:PackageVersion=${{ env.VERSION }} \
           --output ${{ env.PACKAGE_OUTPUT_DIR }}
-
+          
+      - name: Create output directory
+        run: mkdir -p ${{ env.PACKAGE_OUTPUT_DIR }}
+        
       - name: Push template to NuGet
         run: |
           dotnet nuget push "${{ env.PACKAGE_OUTPUT_DIR }}/*.nupkg" \
