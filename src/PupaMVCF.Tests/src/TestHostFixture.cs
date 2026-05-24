@@ -19,7 +19,9 @@ public sealed class TestHostFixture : IAsyncLifetime {
    public IConfiguration Configuration { get; private set; } = null!;
 
    public async Task InitializeAsync() {
+      dotenv.net.DotEnv.Load();
       var builder = Microsoft.Extensions.Hosting.Host.CreateApplicationBuilder([]);
+      builder.Configuration.AddEnvironmentVariables();
       builder.Logging.AddConsole();
       builder.Services.AddSingleton<IValidatorManager, ModifyValidatorManager>(_ =>
          new ModifyValidatorManager(builder.Configuration,

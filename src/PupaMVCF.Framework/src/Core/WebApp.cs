@@ -1,5 +1,6 @@
 using System.Net;
 using System.Security.Cryptography;
+using System.Text;
 using System.Text.Encodings.Web;
 using System.Text.Json;
 
@@ -63,7 +64,7 @@ public abstract class WebApp : IHostedService, IWebAppContext {
          .AddJwtBearer(options => {
             options.TokenValidationParameters = new TokenValidationParameters {
                ValidateIssuerSigningKey = true,
-               IssuerSigningKey = new SymmetricSecurityKey(RandomNumberGenerator.GetBytes(32)),
+               IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration.GetValue<string>("JWT_SECRET") ?? throw new Exception("Undefined JWT_SECRET."))),
                ValidateIssuer = false,
                ValidateAudience = false,
                ClockSkew = TimeSpan.Zero

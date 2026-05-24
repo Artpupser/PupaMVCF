@@ -14,12 +14,13 @@
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
             <PrivateAssets>all</PrivateAssets>
         </PackageReference>
-        <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.8.0"/>
-        <PackageReference Include="xunit" Version="2.5.3"/>
-        <PackageReference Include="Xunit.Extensions.Logging" Version="1.1.0"/>
-        <PackageReference Include="xunit.runner.visualstudio" Version="2.5.3"/>
+        <PackageReference Include="dotenv.net" Version="4.0.2" />
+        <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.8.0" />
+        <PackageReference Include="xunit" Version="2.5.3" />
+        <PackageReference Include="Xunit.Extensions.Logging" Version="1.1.0" />
+        <PackageReference Include="xunit.runner.visualstudio" Version="2.5.3" />
 
-        <Using Include="Xunit"/>
+        <Using Include="Xunit" />
 
         <None Update="appsettings.json">
             <CopyToOutputDirectory>Always</CopyToOutputDirectory>
@@ -29,17 +30,26 @@
             <CopyToOutputDirectory>Always</CopyToOutputDirectory>
             <CopyToPublishDirectory>Always</CopyToPublishDirectory>
         </Content>
+
+        <None Update=".env">
+            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </None>
+        <Content Update=".env">
+            <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+            <CopyToPublishDirectory>Always</CopyToPublishDirectory>
+        </Content>
     </ItemGroup>
     <ItemGroup>
-        <FilesProject Include="$(ProjectDir)/environment/**/*"/>
+        <FilesProject Include="$(ProjectDir)/environment/**/*" />
     </ItemGroup>
     <ItemGroup>
-        <ProjectReference Include="..\PupaMVCF.Framework\PupaMVCF.Framework.csproj"/>
+        <ProjectReference Include="..\PupaMVCF.Framework\PupaMVCF.Framework.csproj" />
     </ItemGroup>
     <Target Name="BuildEnv" AfterTargets="Build">
-        <Copy SourceFiles="@(FilesProject)" DestinationFolder="$(TargetDir)/%(RecursiveDir)"/>
+        <Copy SourceFiles="@(FilesProject)" DestinationFolder="$(TargetDir)/%(RecursiveDir)" />
     </Target>
     <Target Name="PublishEnv" AfterTargets="Publish">
-        <Copy SourceFiles="@(FilesProject)" DestinationFolder="$(PublishDir)/%(RecursiveDir)"/>
+        <Copy SourceFiles="@(FilesProject)" DestinationFolder="$(PublishDir)/%(RecursiveDir)" />
     </Target>
 </Project>

@@ -1,4 +1,5 @@
 using System.Net;
+using System.Security.Claims;
 using System.Text;
 using System.Text.Json;
 
@@ -13,8 +14,8 @@ using PupaMVCF.Framework.Routing;
 
 namespace PupaMVCF.Framework.Core;
 
-public class Request {
-   private readonly HttpRequest _request;
+public class Request(HttpRequest request) {
+   private readonly HttpRequest _request = request;
    public string Path => _request.Path;
    public string PathBase => _request.PathBase;
 
@@ -23,23 +24,16 @@ public class Request {
       : Option<string>.Fail();
 
    public string Url => _request.GetEncodedUrl();
-   public HttpMethodType HttpMethodType { get; }
-   public MimeContentType MimeContentType { get; }
-   public IFeatureCollection FeatureCollection { get; }
+   public HttpMethodType HttpMethodType { get; } = HttpMethodManager.HardGetHttpMethod(request.Method);
+   public MimeContentType MimeContentType { get; } = MimeContent.GetMimeType(request.ContentType);
+   public ClaimsPrincipal User { get; } = request.HttpContext.User;
+   public IFeatureCollection FeatureCollection { get; } = request.HttpContext.Features;
 
    public Option<IPAddress> IpAddress => _request.HttpContext.Connection.RemoteIpAddress is not null
       ? Option<IPAddress>.Ok(_request.HttpContext.Connection.RemoteIpAddress)
       : Option<IPAddress>.Fail();
 
-   public IRequestHeader RequestHeader { get; }
-
-   public Request(HttpRequest request) {
-      _request = request;
-      MimeContentType = MimeContent.GetMimeType(request.ContentType);
-      HttpMethodType = HttpMethodManager.HardGetHttpMethod(request.Method);
-      FeatureCollection = request.HttpContext.Features;
-      RequestHeader = new HeaderDictionaryProvider(_request.Headers);
-   }
+   public IRequestHeader RequestHeader { get; } = new HeaderDictionaryProvider(request.Headers);
 
    public Option<string> GetBearerToken() {
       var authHeader = _request.Headers.Authorization.FirstOrDefault();
@@ -52,6 +46,8 @@ public class Request {
          ? Option<string>.Fail()
          : Option<string>.Ok(token);
    }
+
+   public bool IsAuth() => User.Identity?.IsAuthenticated ?? false;
 
    public Option<string> GetCookie(string key) {
       return _request.Cookies.TryGetValue(key, out var value) ? Option<string>.Ok(value) : Option<string>.Fail();

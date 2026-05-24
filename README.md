@@ -53,6 +53,7 @@
 | ✅ Validations             | Built-in request and model validation utilities                                                                           |
 | 🚨 Error handling         | Centralized exception and error handling mechanisms                                                                       |
 | 🔐 Security               | Includes XSS and SQL Injection protection mechanisms                                                                      |
+| 🔑 Authentication         | Authentication with JWT Bearer Token                                                                                      |
 | 🔄 Daemon processing      | Supports long-running background and daemon tasks                                                                         |
 | 🧩 Microservices ready    | Designed for scalable and distributed microservice architectures                                                          |
 | 🚀 Kestrel integration    | Deep integration with Kestrel including cookies, authentication, and pipe-based I/O                                       |
@@ -99,6 +100,9 @@ dotnet run
 - [PupaMVCF.Framework](https://github.com/Artpupser/PupaMVCF)
 
 ## 🗃️ Devlog
+
+### v0.2.3
+- add: JWT Token generator
 
 ### v0.2.2
 

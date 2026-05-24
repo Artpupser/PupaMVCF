@@ -11,11 +11,13 @@ using PupaMVCF.Framework.Components;
 namespace PupaMVCF.Framework.Core;
 
 public sealed class Response : IErrorController {
-   private Memory<byte> _cache;
+   private ReadOnlyMemory<byte> _cache = ReadOnlyMemory<byte>.Empty;
    private readonly HttpResponse _response;
-   private readonly Stack<string> _errorsStack;
+   private readonly Stack<string> _errorsStack = [];
    private MimeContentType _mimeContentType;
-   public string Nonce { get; }
+
+   public string Nonce { get; } =
+      Convert.ToBase64String(System.Security.Cryptography.RandomNumberGenerator.GetBytes(8));
 
    public int StatusCode {
       get => _response.StatusCode;
@@ -31,11 +33,8 @@ public sealed class Response : IErrorController {
    }
 
    public Response(HttpResponse response) {
-      Nonce = Convert.ToBase64String(System.Security.Cryptography.RandomNumberGenerator.GetBytes(8));
-      _errorsStack = [];
       _response = response;
       _response.StatusCode = 200;
-      _cache = Memory<byte>.Empty;
       _response.Headers["X-Content-Type-Options"] = "nosniff";
       _response.Headers["X-Frame-Options"] = "DENY";
       _response.Headers["X-XSS-Protection"] = "1; mode=block";
@@ -54,7 +53,7 @@ public sealed class Response : IErrorController {
 
    public void PushError(int status) {
       _response.StatusCode = status;
-      _errorsStack.Push("Error description, in status");
+      _errorsStack.Push("Error description === status");
    }
 
    public void PushError(string message, int status) {
@@ -78,13 +77,13 @@ public sealed class Response : IErrorController {
 
    public void SetCookie(string key, string value, TimeSpan expiresAfter, bool secure = true) {
       _response.Cookies.Append(key, value, new CookieOptions {
-         Expires = DateTime.Now + expiresAfter,
+         Expires = DateTimeOffset.UtcNow + expiresAfter,
          Secure = secure
       });
    }
 
    public void SetCache(TimeSpan maxAge) {
-      _response.Headers["Cache-Control"] = $@"max-age={maxAge.TotalSeconds}";
+      _response.Headers["Cache-Control"] = $@"max-age={(int)maxAge.TotalSeconds}";
    }
 
    public async Task SendAsync(CancellationToken cancellationToken) {
@@ -107,7 +106,7 @@ public sealed class Response : IErrorController {
       var buffer = new ArrayBufferWriter<byte>();
       using var writer = new Utf8JsonWriter(buffer);
       JsonSerializer.Serialize(writer, content, WebApp.JsonSerializerOptions);
-      _cache = buffer.WrittenMemory.ToArray();
+      _cache = buffer.WrittenMemory;
    }
 
    public async Task WriteVirtualFileToCache(VirtualFile file, CancellationToken cancellationToken) {
