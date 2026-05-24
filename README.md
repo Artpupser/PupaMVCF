@@ -101,8 +101,14 @@ dotnet run
 
 ## 🗃️ Devlog
 
+### v0.2.4
+
+- add: JWT Token generator, need JWT_SECRET to .env file
+-
+
 ### v0.2.3
-- add: JWT Token generator
+
+- add: prop User [ClaimsPrincipal] in Request.cs
 
 ### v0.2.2
 

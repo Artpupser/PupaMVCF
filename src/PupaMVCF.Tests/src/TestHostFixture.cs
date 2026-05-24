@@ -5,6 +5,7 @@ using Microsoft.Extensions.Logging;
 
 using PupaMVCF.Framework.Controllers;
 using PupaMVCF.Framework.Extensions;
+using PupaMVCF.Framework.Generators;
 using PupaMVCF.Framework.Middleware;
 using PupaMVCF.Framework.Routing;
 using PupaMVCF.Framework.Validations;
@@ -34,6 +35,7 @@ public sealed class TestHostFixture : IAsyncLifetime {
             typeof(JsonValidatorModule),
             typeof(TestValidatorModule)
          ]));
+      builder.Services.AddSingleton<JwtTokenGeneratorService>();
       builder.Services.AddScoped([typeof(LoggerMiddleware)]);
       builder.Services.AddScoped([typeof(TestController), typeof(ErrorControllerOnlyJson), typeof(StaticController)]);
       builder.Services.AddSingleton<RouterMapBuilder>(_ =>

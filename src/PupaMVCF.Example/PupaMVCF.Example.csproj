@@ -16,6 +16,11 @@
         <ProjectReference Include="..\PupaMVCF.Framework\PupaMVCF.Framework.csproj"/>
 
     </ItemGroup>
+    <ItemGroup>
+        <None Update=".env">
+            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </None>
+    </ItemGroup>
     <Target Name="BuildEnv" AfterTargets="Build">
         <Copy SourceFiles="@(FilesProject)" DestinationFolder="$(TargetDir)/%(RecursiveDir)"/>
     </Target>

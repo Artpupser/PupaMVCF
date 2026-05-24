@@ -31,6 +31,7 @@ public static class Program {
             typeof(JsonValidatorModule)
          ]));
       builder.Services.AddSingleton<IDatabaseConnectionFactory, DatabaseConnectionFactory<Npgsql.NpgsqlConnection>>();
+      builder.Services.AddSingleton<JwtTokenGeneratorService>();
       builder.Services.AddSingleton<PublicFolder>();
       builder.Services.AddSingleton<IWebAppBootstrap, TemplateBootstrap>();
 

@@ -8,7 +8,6 @@ namespace PupaMVCF.Template;
 
 public sealed class TemplateApp(
    IConfiguration configuration,
-   IRouter router,
+   JwtTokenGeneratorService jwtTokenGeneratorService, IRouter router,
    ILogger<TemplateApp> logger)
-   : WebApp(configuration, router,
-      logger);
+   : WebApp(configuration, jwtTokenGeneratorService, router, logger);

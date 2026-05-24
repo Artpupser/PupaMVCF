@@ -47,7 +47,9 @@ public class Request(HttpRequest request) {
          : Option<string>.Ok(token);
    }
 
-   public bool IsAuth() => User.Identity?.IsAuthenticated ?? false;
+   public bool IsAuth() {
+      return User.Identity?.IsAuthenticated ?? false;
+   }
 
    public Option<string> GetCookie(string key) {
       return _request.Cookies.TryGetValue(key, out var value) ? Option<string>.Ok(value) : Option<string>.Fail();
@@ -63,7 +65,7 @@ public class Request(HttpRequest request) {
 
    public Option<IEnumerable<IFormFile>> GetFormFiles(string key) {
       var result = _request.Form.Files.GetFiles(key);
-      return result == null ? Option<IEnumerable<IFormFile>>.Fail() : Option<IEnumerable<IFormFile>>.Ok(result);
+      return !result.Any() ? Option<IEnumerable<IFormFile>>.Fail() : Option<IEnumerable<IFormFile>>.Ok(result);
    }
 
    public Option<IFormFile> GetFormFile(string key) {

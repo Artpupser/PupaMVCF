@@ -15,13 +15,13 @@
         <NoWarn>NU5128</NoWarn>
     </PropertyGroup>
     <ItemGroup>
-        <Compile Remove="**\*" />
-        <EmbeddedResource Remove="**\*" />
-        <Content Include=".template.config\**" />
-        <Content Include="appsettings.json" />
-        <Content Include=".env.example" />
-        <Content Include=".env" />
-        <Content Include="src\**" Exclude="src\bin\**;src\obj\**" />
+        <Compile Remove="**\*"/>
+        <EmbeddedResource Remove="**\*"/>
+        <Content Include=".template.config\**"/>
+        <Content Include="appsettings.json"/>
+        <Content Include=".env.example"/>
+        <Content Include=".env"/>
+        <Content Include="src\**" Exclude="src\bin\**;src\obj\**"/>
         <None Include="README.md" Pack="true" PackagePath="\"/>
     </ItemGroup>
 </Project>

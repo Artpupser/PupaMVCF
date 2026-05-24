@@ -27,7 +27,7 @@
     "PUPA_FRAMEWORK_VERSION": {
       "type": "parameter",
       "datatype": "string",
-      "defaultValue": "0.2.3",
+      "defaultValue": "0.2.4",
       "replaces": "FrameworkVersion"
     }
   }

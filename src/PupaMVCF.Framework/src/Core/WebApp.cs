@@ -15,6 +15,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
 
 using PupaMVCF.Framework.Extensions;
+using PupaMVCF.Framework.Generators;
 using PupaMVCF.Framework.Routing;
 
 namespace PupaMVCF.Framework.Core;
@@ -35,7 +36,8 @@ public abstract class WebApp : IHostedService, IWebAppContext {
       WriteIndented = false
    };
 
-   protected WebApp(IConfiguration configuration, IRouter router, ILogger<WebApp> logger,
+   protected WebApp(IConfiguration configuration, JwtTokenGeneratorService jwtTokenGeneratorService, IRouter router,
+      ILogger<WebApp> logger,
       IWebAppBootstrap? bootstrap = null!) {
       if (Context != null)
          throw new InvalidOperationException("App provider has already been configured");
@@ -64,7 +66,7 @@ public abstract class WebApp : IHostedService, IWebAppContext {
          .AddJwtBearer(options => {
             options.TokenValidationParameters = new TokenValidationParameters {
                ValidateIssuerSigningKey = true,
-               IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration.GetValue<string>("JWT_SECRET") ?? throw new Exception("Undefined JWT_SECRET."))),
+               IssuerSigningKey = new SymmetricSecurityKey(jwtTokenGeneratorService.JwtSecretBytes),
                ValidateIssuer = false,
                ValidateAudience = false,
                ClockSkew = TimeSpan.Zero
