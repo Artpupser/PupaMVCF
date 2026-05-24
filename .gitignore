@@ -12,6 +12,7 @@ src/PupaMVCF.ExampleMacroProcess/appsettings.json
 
 # dotenv files
 .env
+!src/PupaMVCF.Tests/.env
 
 # User-specific files
 *.rsuser
