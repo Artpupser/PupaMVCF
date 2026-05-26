@@ -99,8 +99,9 @@ public abstract class WebApp : IHostedService, IWebAppContext {
       if (_bootstrap is not null) {
          _logger.LogInformation($"<< BOOTSTRAP LOADER >>");
          var operations = _bootstrap.Operations();
-         for (var i = 0; i < operations.Count; i++) {
-            _logger.LogInformation("⚡ Execute operation number [{I}]", i + 1);
+         
+         for (var i = 1; operations.Count > 0; i++) {
+            _logger.LogInformation("⚡ Execute operation number [{I}]", i);
             var op = operations.Dequeue();
             await op();
          }
