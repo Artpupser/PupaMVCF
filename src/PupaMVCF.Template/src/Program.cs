@@ -20,26 +20,12 @@ public static class Program {
       dotenv.net.DotEnv.Load();
       var builder = Host.CreateApplicationBuilder(args);
       builder.Configuration.AddEnvironmentVariables();
-      builder.Services.AddSingleton<IValidatorManager, ModifyValidatorManager>(_ =>
-         new ModifyValidatorManager(builder.Configuration,
-         [
-            typeof(NeedValidatorModule),
-            typeof(EmailValidatorModule),
-            typeof(NumberRangeValidatorModule),
-            typeof(StringRangeValidatorModule),
-            typeof(CloudflareCaptchaValidatorModule),
-            typeof(JsonValidatorModule)
-         ]));
-      builder.Services.AddSingleton<IDatabaseConnectionFactory, DatabaseConnectionFactory<Npgsql.NpgsqlConnection>>();
-      builder.Services.AddSingleton<JwtTokenGeneratorService>();
+      await InitializatorBuilder.Except([]);
       builder.Services.AddSingleton<PublicFolder>();
+      builder.Services.AddSingleton<JwtTokenGeneratorService>();
+      builder.Services.AddSingleton<IDatabaseConnectionFactory, DatabaseConnectionFactory<Npgsql.NpgsqlConnection>>();
+      await InitializatorBuilder.PreloadMvcComponents(builder.Services);
       builder.Services.AddSingleton<IWebAppBootstrap, TemplateBootstrap>();
-
-      builder.Services.AddScoped([typeof(LoggerMiddleware), typeof(TemplateMiddleware)]);
-      builder.Services.AddScoped(
-         [typeof(TemplateController), typeof(ErrorControllerOnlyJson), typeof(StaticController)]);
-      builder.Services.AddSingleton<RouterMapBuilder>(_ => new RouterMapBuilder().AddControllers(
-         [typeof(TemplateController), typeof(ErrorControllerOnlyJson), typeof(StaticController)]));
       builder.Services.AddSingleton<IRouter, Router>();
       builder.Services.AddHostedService<TemplateApp>();
       var host = builder.Build();

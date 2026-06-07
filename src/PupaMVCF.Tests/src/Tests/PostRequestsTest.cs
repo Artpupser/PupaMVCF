@@ -1,12 +1,7 @@
 using System.Net;
 using System.Net.Http.Json;
-
 using Microsoft.Extensions.Configuration;
-
-using PupaMVCF.Framework.Core;
-using PupaMVCF.Framework.Extensions;
 using PupaMVCF.Tests.Models;
-
 using Xunit.Abstractions;
 
 namespace PupaMVCF.Tests.Tests;
@@ -16,7 +11,7 @@ public sealed class PostRequestsTest(ITestOutputHelper testOutputHelper, TestHos
    private async Task<HttpResponseMessage> SendClient<T>(T model) {
       var ip = fixture.Configuration.GetValue<string>("Ip");
       var port = fixture.Configuration.GetValue<int>("Port");
-      return await WebApp.Context.Client.PostAsJsonAsync($"http://{ip}:{port}/test/post", model);
+      return await fixture.Client.PostAsJsonAsync($"http://{ip}:{port}/test/post", model);
    }
 
    [Fact]

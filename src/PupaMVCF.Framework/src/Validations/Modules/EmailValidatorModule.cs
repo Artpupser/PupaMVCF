@@ -2,6 +2,7 @@ using PupaMVCF.Framework.Core;
 
 namespace PupaMVCF.Framework.Validations.Modules;
 
+[InitializatorEye(included: true)]
 public partial class EmailValidatorModule(IValidatorManager validatorManager) : ValidatorModule(validatorManager) {
    public override string RuleId => "email";
    public override string Message => "Value is not email";

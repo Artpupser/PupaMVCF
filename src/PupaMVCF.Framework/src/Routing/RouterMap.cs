@@ -10,8 +10,7 @@ using PupaMVCF.Framework.Core;
 namespace PupaMVCF.Framework.Routing;
 
 public sealed class RouterMap {
-   private readonly FrozenDictionary<RouteKey, RouteValue>
-      _routes;
+   private readonly FrozenDictionary<RouteKey, RouteValue> _routes;
 
    public override string ToString() {
       var sb = new StringBuilder();
@@ -21,8 +20,8 @@ public sealed class RouterMap {
 
    public RouteValue? Error { get; }
 
-   public RouterMap(RouterMapBuilder builder) {
-      var controllerTypes = builder.Build();
+   public RouterMap() {
+      var controllerTypes = InitializatorBuilder.Build<Controller>();
       var dict = new Dictionary<RouteKey, RouteValue>();
       foreach (var controllerType in controllerTypes) {
          var scheme = controllerType.GetCustomAttribute<ControllerSchemeAttribute>();

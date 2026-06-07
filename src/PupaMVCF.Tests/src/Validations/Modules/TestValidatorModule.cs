@@ -4,6 +4,7 @@ using PupaMVCF.Tests.Models;
 
 namespace PupaMVCF.Tests.Validations.Modules;
 
+[InitializatorEye(true)]
 public sealed class TestValidatorModule(IValidatorManager validatorManager) : ValidatorModule(validatorManager) {
    public override async Task<bool> Valid(object? instance, string options, Request request, Response response,
       CancellationToken cancellationToken) {

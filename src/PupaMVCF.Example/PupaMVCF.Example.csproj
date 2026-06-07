@@ -10,10 +10,10 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <FilesProject Include="$(ProjectDir)/environment/**/*"/>
+        <FilesProject Include="$(ProjectDir)/environment/**/*" />
     </ItemGroup>
     <ItemGroup>
-        <ProjectReference Include="..\PupaMVCF.Framework\PupaMVCF.Framework.csproj"/>
+        <ProjectReference Include="..\PupaMVCF.Framework\PupaMVCF.Framework.csproj" />
 
     </ItemGroup>
     <ItemGroup>
@@ -21,10 +21,13 @@
             <CopyToOutputDirectory>Always</CopyToOutputDirectory>
         </None>
     </ItemGroup>
+    <ItemGroup>
+      <PackageReference Include="dotenv.net" Version="4.0.2" />
+    </ItemGroup>
     <Target Name="BuildEnv" AfterTargets="Build">
-        <Copy SourceFiles="@(FilesProject)" DestinationFolder="$(TargetDir)/%(RecursiveDir)"/>
+        <Copy SourceFiles="@(FilesProject)" DestinationFolder="$(TargetDir)/%(RecursiveDir)" />
     </Target>
     <Target Name="PublishEnv" AfterTargets="Publish">
-        <Copy SourceFiles="@(FilesProject)" DestinationFolder="$(PublishDir)/%(RecursiveDir)"/>
+        <Copy SourceFiles="@(FilesProject)" DestinationFolder="$(PublishDir)/%(RecursiveDir)" />
     </Target>
 </Project>

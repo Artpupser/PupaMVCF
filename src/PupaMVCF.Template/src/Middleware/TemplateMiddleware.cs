@@ -7,6 +7,7 @@ using PupaMVCF.Framework.Middleware;
 
 namespace PupaMVCF.Template.Middleware;
 
+[InitializatorEye(included: true)]
 public sealed class TemplateMiddleware(ILogger<TemplateMiddleware> logger) : IMiddleware {
    public Task<Option> Invoke(Request request, Response response, CancellationToken cancellationToken) {
       logger.LogWarning("Template middleware!");

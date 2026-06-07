@@ -2,6 +2,7 @@ using PupaMVCF.Framework.Core;
 
 namespace PupaMVCF.Framework.Validations.Modules;
 
+[InitializatorEye(included: true)]
 public sealed class NeedValidatorModule(IValidatorManager validatorManager) : ValidatorModule(validatorManager) {
    public override string RuleId => "need";
    public override string Message => "Value is null";

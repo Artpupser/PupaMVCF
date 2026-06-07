@@ -2,6 +2,7 @@ using PupaMVCF.Framework.Core;
 
 namespace PupaMVCF.Framework.Validations.Modules;
 
+[InitializatorEye(included: true)]
 public sealed class NumberRangeValidatorModule(IValidatorManager validatorManager) : ValidatorModule(validatorManager) {
    public override string RuleId => "number_range";
    public override string Message => "Number value not in range";

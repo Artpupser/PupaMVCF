@@ -3,6 +3,7 @@ using PupaMVCF.Framework.Middleware;
 
 namespace PupaMVCF.Framework.Controllers;
 
+[InitializatorEye(true)]
 public sealed class ErrorControllerOnlyJson : Controller {
    private ValueTask ErrorJsonHandler(Request request, Response response, CancellationToken cancellationToken) {
       response.WriteTJsonToCache(response.Errors);

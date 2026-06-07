@@ -12,7 +12,7 @@ public abstract class Component : IComponentParent {
    protected readonly IComponentParent? _parent;
    protected readonly View _currentView;
 
-   protected static string StaticPrefix => WebApp.Context?.Configuration?.GetValue<string>("StaticPrefix") ??
+   protected static string StaticPrefix => WebApp.Instance.Configuration?.GetValue<string>("StaticPrefix") ??
                                            throw new Exception("Undefined StaticPrefix");
 
    protected Component(IComponentParent? parent) {

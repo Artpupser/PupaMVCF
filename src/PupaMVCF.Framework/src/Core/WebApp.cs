@@ -1,6 +1,4 @@
 using System.Net;
-using System.Security.Cryptography;
-using System.Text;
 using System.Text.Encodings.Web;
 using System.Text.Json;
 
@@ -14,21 +12,18 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
 
-using PupaMVCF.Framework.Extensions;
 using PupaMVCF.Framework.Generators;
 using PupaMVCF.Framework.Routing;
 
 namespace PupaMVCF.Framework.Core;
 
-public abstract class WebApp : IHostedService, IWebAppContext {
-   public static IWebAppContext Context { get; private set; } = null!;
+public abstract class WebApp : IHostedService {
+   public static WebApp Instance { get; private set; } = null!;
    private readonly IRouter _router;
    private readonly WebApplication _host;
    private readonly ILogger<WebApp> _logger;
    private readonly IWebAppBootstrap? _bootstrap;
    public IConfiguration Configuration { get; }
-   public HttpClient Client { get; }
-
 
    public static readonly JsonSerializerOptions JsonSerializerOptions = new(JsonSerializerDefaults.Web) {
       Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping,
@@ -39,15 +34,12 @@ public abstract class WebApp : IHostedService, IWebAppContext {
    protected WebApp(IConfiguration configuration, JwtTokenGeneratorService jwtTokenGeneratorService, IRouter router,
       ILogger<WebApp> logger,
       IWebAppBootstrap? bootstrap = null!) {
-      if (Context != null)
+      if (Instance != null)
          throw new InvalidOperationException("App provider has already been configured");
       Configuration = configuration;
       _logger = logger;
       _bootstrap = bootstrap;
       _router = router;
-      Client = new HttpClient {
-         Timeout = configuration.GetValue<TimeSpan>("TimeoutClient")
-      };
       Dapper.DefaultTypeMap.MatchNamesWithUnderscores = true;
       var builder = WebApplication.CreateBuilder();
 
@@ -87,7 +79,7 @@ public abstract class WebApp : IHostedService, IWebAppContext {
          }
       });
 
-      Context = this;
+      Instance = this;
    }
 
    public async Task StartAsync(CancellationToken cancellationToken) {
@@ -118,8 +110,7 @@ public abstract class WebApp : IHostedService, IWebAppContext {
    }
 
    public async Task Dispose() {
-      Client?.Dispose();
       await _host.DisposeAsync();
-      Context = null!;
+      Instance = null!;
    }
 }

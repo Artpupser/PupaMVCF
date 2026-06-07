@@ -1,10 +1,9 @@
 using System.Text.Json;
-
 using PupaMVCF.Framework.Core;
-using PupaMVCF.Framework.Validations;
 
 namespace PupaMVCF.Framework.Validations.Modules;
 
+[InitializatorEye(included: true)]
 public sealed class JsonValidatorModule(IValidatorManager validatorManager) : ValidatorModule(validatorManager) {
    public override string RuleId => "json";
    public override string Message => "This object not json";

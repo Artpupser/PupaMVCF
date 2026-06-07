@@ -99,8 +99,24 @@ dotnet run
 - [Npgsql](https://www.nuget.org/packages/Npgsql)
 - [PupaMVCF.Framework](https://github.com/Artpupser/PupaMVCF)
 
+### PupaMVCF.Example
+
+- [dotenv.net](https://github.com/bolorundurowb/dotenv.net) 
+
 ## 🗃️ Devlog
 
+### v0.2.6
+- add: simplify initialization - controllers, middlewares, validators, use Attributes + Assembly reflection, exists except method for removing default classes with InitializatorEye attributes.
+- add: /list route in PupaMVCF.Template.
+- add: DI initialization for validator modules and DatabaseConnection.
+- add: HttpClient to TestHostFixture.
+- changed: updated version PupaLib.FileIO v1.2.0 -> v1.3.1, rewrited code with new lib version.
+- fix: PupaMVCF.Template adapted for new PupaMVCF.Framework version.
+- changed: rename IErrorController -> IErrorStack .
+- deleted: HttpClient from WebApp.cs.
+- deleted: full remove IAnyAppContext & IWebAppContext from WebApp replace on DI, not used many time.
+- deleted: ServiceCollectionExtension, RouterMapBuilder, ValidatorManagerBuilder.
+ 
 ### v0.2.5
 - fix: error operation processing from IWebAppBootstrap in WebApp.cs
 

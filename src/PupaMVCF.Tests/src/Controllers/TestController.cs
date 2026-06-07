@@ -10,6 +10,7 @@ using PupaMVCF.Tests.Models;
 
 namespace PupaMVCF.Tests.Controllers;
 
+[InitializatorEye(true)]
 [ControllerScheme("/test")]
 public sealed class TestController(IValidatorManager validatorManager, ILogger<TestController> logger) : Controller {
    [ControllerHandler("/post", HttpMethodType.POST, typeof(LoggerMiddleware))]

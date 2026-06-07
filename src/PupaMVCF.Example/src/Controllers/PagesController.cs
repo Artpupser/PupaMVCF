@@ -6,6 +6,7 @@ using PupaMVCF.Framework.Components;
 
 namespace PupaMVCF.Example.Controllers;
 
+[InitializatorEye(true)]
 [ControllerScheme("")]
 public sealed class PagesController(ILogger<PagesController> logger) : Controller {
    [ControllerHandler("/", HttpMethodType.GET, typeof(LoggerMiddleware))]

@@ -1,6 +1,6 @@
 namespace PupaMVCF.Framework.Core;
 
-public interface IErrorController {
+public interface IErrorStack {
    IEnumerable<string> Errors { get; }
    void PushError(string message);
    void PushError(int status);

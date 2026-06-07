@@ -2,6 +2,7 @@ using PupaMVCF.Framework.Core;
 
 namespace PupaMVCF.Framework.Validations.Modules;
 
+[InitializatorEye(included: true)]
 public sealed class StringRangeValidatorModule(IValidatorManager validatorManager) : ValidatorModule(validatorManager) {
    public override string RuleId => "string_range";
    public override string Message => "Length string not in range";

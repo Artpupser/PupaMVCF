@@ -10,7 +10,7 @@ using PupaMVCF.Framework.Components;
 
 namespace PupaMVCF.Framework.Core;
 
-public sealed class Response : IErrorController {
+public sealed class Response : IErrorStack {
    private ReadOnlyMemory<byte> _cache = ReadOnlyMemory<byte>.Empty;
    private readonly HttpResponse _response;
    private readonly Stack<string> _errorsStack = [];
@@ -111,7 +111,8 @@ public sealed class Response : IErrorController {
 
    public async Task WriteVirtualFileToCache(VirtualFile file, CancellationToken cancellationToken) {
       MimeContentType = MimeContent.GetMimeType(file);
-      WriteBytesToCache(await file.ReadBytesAsync(cancellationToken));
+      if((await file.ReadBytesAsync(cancellationToken)).Out(out var bytes))
+         WriteBytesToCache(bytes);
    }
 
    public void WriteStrToCache(string content) {

@@ -7,6 +7,7 @@ using PupaMVCF.Template.Views;
 
 namespace PupaMVCF.Template.Controllers;
 
+[InitializatorEye(included: true)]
 [ControllerScheme("")]
 public sealed class TemplateController : Controller {
    [ControllerHandler("/", HttpMethodType.GET, typeof(LoggerMiddleware), typeof(TemplateMiddleware))]

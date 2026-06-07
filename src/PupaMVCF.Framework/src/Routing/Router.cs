@@ -1,18 +1,14 @@
-using System.Text;
-
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-
 using PupaLib.Core;
-
 using PupaMVCF.Framework.Core;
 using PupaMVCF.Framework.Middleware;
 
 namespace PupaMVCF.Framework.Routing;
 
-public sealed class Router(RouterMapBuilder mapBuilder, IServiceProvider serviceProvider, ILogger<Router> logger)
+public sealed class Router(IServiceProvider serviceProvider, ILogger<Router> logger)
    : IRouter {
-   private readonly RouterMap _map = new(mapBuilder);
+   private readonly RouterMap _map = new();
 
    public override string ToString() {
       return $"<< ROUTER >>\n{_map}";

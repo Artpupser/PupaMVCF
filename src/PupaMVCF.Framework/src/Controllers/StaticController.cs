@@ -2,6 +2,7 @@ using PupaMVCF.Framework.Core;
 
 namespace PupaMVCF.Framework.Controllers;
 
+[InitializatorEye(true)]
 [ControllerScheme("/public")]
 public sealed class StaticController(PublicFolder publicFolder) : Controller {
    private static readonly char[] InvalidChars = ['\\', '/', '\0', ':', '*', '?', '"', '<', '>', '|'];
@@ -20,9 +21,7 @@ public sealed class StaticController(PublicFolder publicFolder) : Controller {
 
       cancellationToken.ThrowIfCancellationRequested();
 
-      var file = publicFolder.Virtual.GetFileIn(name);
-
-      if (file is null) {
+      if (!publicFolder.Virtual.GetFileIn(name).Out(out var file)) {
          response.PushError("File not found", 404);
          return;
       }
